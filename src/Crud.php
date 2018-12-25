@@ -31,14 +31,17 @@ final class Crud {
 	 * @access public 
 	 * Opens the initial database connection. 
 	 * THIS SHOULD ONLY BE INITAILIZED ONCE PER SCRIPT!!! You will have perf issues otherwise
+	 *
+	 * @param OPTIONAL bool $developmentMode Pass true to this when you're developing the actual class in ANY OTHER CIRCUMSTANCE leave blank
+	 * 
 	 * @throws CrudException when the database login details ($dbname, $username, $password, etc...) remain the same as the defaults
 	 *
 	 */
 
-	public function __construct() {
+	public function __construct(bool $developmentMode = false) {
 		$server = 'localhost'; // This one might not change
 		$dbname = 'your_database_name'; // Change this to the name of the database you are working with
-		if ($dbname === 'your_database_name') {
+		if ($dbname === 'your_database_name' && $developmentMode === false) {
 			throw new CrudException('Database details not changed! Please go into the class file and change the login details to match your specific DB.');
 		}
 		$dsn = 'mysql:host='.$server.';dbname='.$dbname; // Right now we only support mysql/mariadb
@@ -127,7 +130,7 @@ final class Crud {
 			return $stmt->fetchAll();
 
 		} else {
-			
+
 			// Running the statement and getting the row count
 			$stmt = $this->pdo->prepare($statement);
 			$stmt->execute($values);
