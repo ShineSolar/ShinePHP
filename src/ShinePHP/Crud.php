@@ -160,15 +160,16 @@ final class Crud {
 	 */
 
 	public static function sanitizeTable(string $table, array $tableWhiteList = []) : string {
-		if (!empty($tableWhiteList) && !array_search($table, $tableWhiteList)) {
-			throw new CrudException('Value does not exist in value whitelist');
-		} else if (!empty($tableWhiteList) && array_search($table, $tableWhiteList)) {
+		if (!empty($tableWhiteList) && array_search($table, $tableWhiteList) === false) {
+			throw new CrudException('Value does not exist in value whitelist.');
+		} else if (!empty($tableWhiteList) && array_search($table, $tableWhiteList) !== false) {
 			return $table;
 		} else {
-			return "`".str_replace("`","``",$table)."`";
+			return '`'.str_replace('`','``',$table).'`';
 		}
 	}
 
 }
 
+// Custom Exception class. We don't need any more functionality other than the built in Exception class
 final class CrudException extends \Exception {}
