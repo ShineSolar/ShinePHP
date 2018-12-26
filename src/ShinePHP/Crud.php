@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+namespace ShinePHP;
+
 /**
  * CRUD is a class to make a cleaner, simpler interface for working with PDO objects 
  * CRUD is an interface built for PHP developers to reduce all of the code repeating the PDO requires
@@ -9,7 +11,8 @@ declare(strict_types=1);
  * 
  * EXAMPLE USAGE:
  * $pdo = new Crud();
- * $user = $pdo->readFromDatabase('SELECT * FROM users WHERE id = ?', [1]);
+ * $dbReturn = $pdo->readFromDatabase('SELECT * FROM users WHERE id = ?', [1]);
+ * $user = $dbReturn[0];
  *
  * @package CRUD
  * @author Adam McGurk <amcgurk@shinesolar.com>
@@ -39,7 +42,7 @@ final class Crud {
 	 */
 
 	public function __construct(bool $developmentMode = false) {
-		$server = 'localhost'; // This one might not change
+		$server = '127.0.0.1'; // This one might not change
 		$dbname = 'your_database_name'; // Change this to the name of the database you are working with
 		if ($dbname === 'your_database_name' && $developmentMode === false) {
 			throw new CrudException('Database details not changed! Please go into the class file and change the login details to match your specific DB.');
@@ -47,11 +50,11 @@ final class Crud {
 		$dsn = 'mysql:host='.$server.';dbname='.$dbname; // Right now we only support mysql/mariadb
 		$username = 'your_mysql_client'; // Change this to the name of your mysql user
 		$password = 'your_mysql_password'; // Change this to the password of your mysql user
-		$options = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC);
+		$options = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC);
 	    try {
-	        $pdo = new PDO($dsn, $username, $password, $options);
+	        $pdo = new \PDO($dsn, $username, $password, $options);
 	        $this->pdo = $pdo;
-	    } catch(PDOException $ex) {
+	    } catch(\PDOException $ex) {
 	    	echo 'Trying to link to your database failed. This is usually because you have a wrong username or password on your mysql client. Here is the error message so you can do more digging! '.$ex;
 	        exit;
 	    }
@@ -91,6 +94,7 @@ final class Crud {
 				throw new CrudException('Incorrect number of rows returned. The expected number of rows to be returned is '.$rowsReturned.' and '.$rowCount.' were returned.');
 			}
 		} else {
+
 			// Running the statement and getting the row count
 			$stmt = $this->pdo->prepare($statement);
 			$stmt->execute($values);
@@ -131,7 +135,7 @@ final class Crud {
 
 		} else {
 
-			// Running the statement and getting the row count
+			// Running the statement and returning the return (no throwing exception on empty return)
 			$stmt = $this->pdo->prepare($statement);
 			$stmt->execute($values);
 			return $stmt->fetchAll();
@@ -167,4 +171,4 @@ final class Crud {
 
 }
 
-final class CrudException extends Exception {}
+final class CrudException extends \Exception {}
