@@ -19,7 +19,7 @@ final class HandleDataTest extends TestCase {
 
     // Testing an invalid class init with no parameters
     public function testCannotBeCreatedWithNoParametersPassed() : void {
-    	$this->expectException(HandleDataException::class);
+    	$this->expectException(ArgumentCountError::class);
     	new HandleData();
     }
 
