@@ -29,7 +29,11 @@ final class HandleData {
 	public $data;
 
 	public function __construct(array $data) {
-		//
+		if (empty($data)) {
+			throw new HandleDataException('There was no data in the array passed to the constructor');
+		} else {
+			$this->data = $data;
+		}
 	}
 
 	/**
