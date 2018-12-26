@@ -51,6 +51,34 @@ final class HandleData {
 
 	}
 
+	public function email(string $email) : string {
+		//
+	}
+
+	public function phone(string $phone) : string {
+		//
+	}
+
+	public function string(string $string) : string {
+		//
+	}
+
+	public function url(string $url) : string {
+		//
+	}
+
+	public function ipAddress(string $ip, bool $isIpV6 = false) : string {
+		//
+	}
+
+	public function float($number, bool $canBeZero = false) : float {
+		//
+	}
+
+	public function integer($number, bool $canBeZero = false) : int {
+		//
+	}
+
 	/**
 	 *
 	 * Makes it easy to accept JSON input from any url
