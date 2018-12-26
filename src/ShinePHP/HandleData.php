@@ -25,15 +25,30 @@ final class HandleData {
 	 *  @access public
 	 *	@var array This is the data set on class init 
 	 */
-
 	public $data;
 
+	/**
+	 *
+	 * @access public 
+	 * Sets the data as the class variable. 
+	 *
+	 * @param array $data This is the data input 
+	 * 
+	 * @throws ArgumentCountError when there are no parameters passed
+	 * @throws InvalidArgumentException when the parameter passed isn't an array
+	 * @throws HandleDataException when the array is empty
+	 *
+	 */
+
 	public function __construct(array $data) {
+
+		// Checking if array is empty, if it is, throw exception, if not set class data
 		if (empty($data)) {
 			throw new HandleDataException('There was no data in the array passed to the constructor');
 		} else {
 			$this->data = $data;
 		}
+
 	}
 
 	/**
@@ -53,6 +68,7 @@ final class HandleData {
 
 	public static function turnJsonInputIntoArray(string $urlToRetrieveFrom = 'php://input') : array {
 
+		// Check if JSON is null, if it is, throw HandleDataException, if not, return the decoded assoc array.
 		if (json_decode(file_get_contents($urlToRetrieveFrom), true) === null) {
 			throw new HandleDataException('No data retrieved from url: '.$urlToRetrieveFrom);
 		} else {
