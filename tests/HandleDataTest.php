@@ -9,6 +9,26 @@ use ShinePHP\{HandleData, HandleDataException};
 
 final class HandleDataTest extends TestCase {
 
+	// Testing a valid class init
+	public function testCanBeCreatedWithValidArray() : void {
+        $this->assertInstanceOf(
+            HandleData::class,
+            new HandleData(HandleData::turnJsonInputIntoArray('http://127.0.0.1/'))
+        );
+    }
+
+    // Testing an invalid class init with no parameters
+    public function testCannotBeCreatedWithNoParametersPassed() : void {
+    	$this->expectException(HandleDataException::class);
+    	new HandleData();
+    }
+
+    // Testing an invalid class init with no parameters
+    public function testCannotBeCreatedWithEmptyArray() : void {
+    	$this->expectException(HandleDataException::class);
+    	new HandleData([]);
+    }
+
 	// Testing valid JSON input from url
 	public function testingValidJsonInputFromUrl() : void {
 		$jsonRetrieved = HandleData::turnJsonInputIntoArray('http://127.0.0.1/');
