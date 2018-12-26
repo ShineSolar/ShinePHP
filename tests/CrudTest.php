@@ -5,8 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
 require 'src/ShinePHP/Crud.php';
-use ShinePHP\Crud;
-use ShinePHP\CrudException;
+use ShinePHP\{Crud, CrudException};
 
 final class CrudTest extends TestCase {
 
