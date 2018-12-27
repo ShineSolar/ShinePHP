@@ -41,4 +41,16 @@ final class HandleDataTest extends TestCase {
 		HandleData::turnJsonInputIntoArray();
 	}
 
+	// Testing valid validation from htmlspecialchars
+	public function testingValidPrepareSingularForOutputValidation() : void {
+		$mitigatedXSS = HandleData::prepareSingularForOutputValidation('<script>alert("xss");</script>');
+		$this->assertEquals('&lt;script&gt;alert(&quot;xss&quot;);&lt;/script&gt;', $mitigatedXSS);
+	}
+
+	// Testing prepareSingularForOutputValidation() method with no arg
+	public function testingInvalidSingularOutputValidation() : void {
+		$this->expectException(ArgumentCountError::class);
+		HandleData::prepareSingularForOutputValidation();
+	}
+
 }

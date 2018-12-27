@@ -51,32 +51,43 @@ final class HandleData {
 
 	}
 
-	public function email(string $email) : string {
+	public static function email(string $email) : string {
 		//
 	}
 
-	public function phone(string $phone) : string {
+	public static function phone(string $phone) : string {
 		//
 	}
 
-	public function string(string $string) : string {
+	public static function string(string $string) : string {
 		//
 	}
 
-	public function url(string $url) : string {
+	public static function url(string $url) : string {
 		//
 	}
 
-	public function ipAddress(string $ip, bool $isIpV6 = false) : string {
+	public static function ipAddress(string $ip, bool $isIpV6 = false) : string {
 		//
 	}
 
-	public function float($number, bool $canBeZero = false) : float {
+	public static function float($number, bool $canBeZero = false) : float {
 		//
 	}
 
-	public function integer($number, bool $canBeZero = false) : int {
+	public static function integer($number, bool $canBeZero = false) : int {
 		//
+	}
+
+	public function prepareAllForOutputValidation() : array {
+		//
+		foreach ($this->data as $data) {
+			//
+		}
+	}
+
+	public static function prepareSingularForOutputValidation(string $varToPrepare) : string {
+		return htmlspecialchars($varToPrepare);
 	}
 
 	/**
