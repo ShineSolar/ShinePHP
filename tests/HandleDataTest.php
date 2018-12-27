@@ -77,6 +77,30 @@ final class HandleDataTest extends TestCase {
     	HandleData::url('shinesolar.com');
     }
 
+    // Testing valid float
+    public function testValidFloat() : void {
+    	$float = HandleData::float('1.292716');
+    	$this->assertEquals(1.292716, $float);
+    	$lessThanOneFloat = HandleData::float('0.292716');
+    	$this->assertEquals(0.292716, $lessThanOneFloat);
+    	$negativeFloat = HandleData::float('-1.292716');
+    	$this->assertEquals(-1.292716, $negativeFloat);
+    	$wholeNumber = HandleData::float('1');
+    	$this->assertEquals(1.00, $wholeNumber);
+    }
+
+    // Testing invalid float passing 0
+    public function testInvalidFloatPassingZero() : void {
+    	$this->expectException(HandleDataException::class);
+    	HandleData::float(0);
+    }
+
+    // Testing invalid float passing a string
+    public function testInvalidFloatPassingString() : void {
+    	$this->expectException(HandleDataException::class);
+    	HandleData::float('not a valid float');
+    }
+
 	// Testing valid JSON input from url
 	public function testingValidJsonInputFromUrl() : void {
 		$jsonRetrieved = HandleData::turnJsonInputIntoArray('http://127.0.0.1/');

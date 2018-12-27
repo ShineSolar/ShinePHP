@@ -164,10 +164,27 @@ final class HandleData {
 	}
 
 	public static function float($number, bool $canBeZero = false) : float {
-		//
+		$sanitizedNumber = filter_var($number, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+		$validatedFloat = filter_var($sanitizedNumber, FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_THOUSAND);
+		if ($validatedFloat === false) {
+			throw new HandleDataException('Not a vaild float');
+		} else if ($canBeZero === false && $validatedFloat != 0) {
+			return $validatedFloat;
+		} else {
+			throw new HandleDataException('Float cannot be 0. The return number is: '.$validatedFloat);
+		}
 	}
 
 	public static function integer($number, bool $canBeZero = false) : int {
+		$sanitizedNumber = filter_var($number, FILTER_SANITIZE_NUMBER_INT);
+		$validatedInt = filter_var($sanitizedNumber, FILTER_VALIDATE_INT);
+		if ($validatedInt === false) {
+			throw new HandleDataException('Not a vaild integer');
+		} else if ($canBeZero === false && $validatedInt !== 0) {
+			return $validatedInt;
+		} else {
+			throw new HandleDataException('Integer cannot be 0. The return number is: '.$validatedInt);
+		}
 		//
 	}
 
