@@ -51,20 +51,98 @@ final class HandleData {
 
 	}
 
-	public static function email(string $email) : string {
-		//
+	/**
+	 *
+	 * Makes it easy to validate an email address AND gives you control over the domain if you want
+	 *
+	 * @access public
+	 *
+	 * @param string $email this is the string you want validated as an email address
+	 * @param OPTIONAL string $domainToValidate only pass a paramter to this if you only want email addresses belonging to certain domains to be validated
+	 *
+	 * @throws ArgumentCountError when there are no parameters passed
+	 * @throws HandleDataException the email passed isn't a valid email OR when a valid email doesn't validate to the domain
+	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
+	 * 
+	 * @return string valid email address
+	 *
+	 */
+
+	public static function email(string $email, string $domainToValidate = '') : string {
+
+		// setting the original variables
+		$sanitizedEmail = filter_var($email, FILTER_SANITIZE_EMAIL);
+		$emailDomain = substr($sanitizedEmail, strpos($sanitizedEmail, "@") + 1);
+
+		// Checking if 
+		if (filter_var($sanitizedEmail, FILTER_VALIDATE_EMAIL) !== false) {
+			if ($domainToValidate !== '' && $emailDomain !== $domainToValidate) {
+				throw new HandleDataException('Email does not adhere to the domain validation passed');
+			} else {
+				return $sanitizedEmail;
+			}
+		} else {
+			throw new HandleDataException('String passed was not a valid email address');
+		}
 	}
 
 	public static function phone(string $phone) : string {
 		//
 	}
 
-	public static function string(string $string) : string {
-		//
+	/**
+	 *
+	 * Sanitize a string
+	 *
+	 * @access public
+	 *
+	 * @param string $string this is the string you want sanitized
+	 * @param OPTIONAL bool $canBeEmpty set to false when 
+	 *
+	 * @throws ArgumentCountError when there are no parameters passed
+	 * @throws HandleDataException if $canBeEmpty is false and the string is empty, throw cannot be empty exception
+	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
+	 * 
+	 * @return string sanitized string
+	 *
+	 */
+
+	public static function string($string, bool $canBeEmpty = true) : string {
+		$sanitizedString = filter_var($string, FILTER_SANITIZE_STRING);
+		if ($canBeEmpty === false && $sanitizedString === '') {
+			throw new HandleDataException('Data cannot be empty');
+		} else {
+			return $sanitizedString;
+		}
 	}
 
+	/**
+	 *
+	 * Sanitize and validate url
+	 *
+	 * @access public
+	 *
+	 * @param string $url string you want validated as URL
+	 *
+	 * @throws ArgumentCountError when there are no parameters passed
+	 * @throws HandleDataException if $url is not a valid URL
+	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
+	 * 
+	 * @return string validated URL
+	 *
+	 */
+
 	public static function url(string $url) : string {
-		//
+		$sanitizedUrl = filter_var($url, FILTER_SANITIZE_URL);
+		if (filter_var($sanitizedUrl, FILTER_VALIDATE_URL)) {
+			return $sanitizedUrl;
+		} else {
+			throw new HandleDataException('Invalid URL passed');
+		}
+	}
+
+	public static function boolean($variableToMakeBoolean) : bool {
+		return filter_var($variableToMakeBoolean, FILTER_VALIDATE_BOOLEAN);
 	}
 
 	public static function ipAddress(string $ip, bool $isIpV6 = false) : string {
