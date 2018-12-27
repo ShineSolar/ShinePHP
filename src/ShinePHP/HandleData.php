@@ -141,6 +141,20 @@ final class HandleData {
 		}
 	}
 
+	/**
+	 *
+	 * Return a boolean
+	 *
+	 * @access public
+	 *
+	 * @param mixed $variableToMakeBoolean variable you want returned as a boolean
+	 *
+	 * @throws ArgumentCountError when there are no parameters passed
+	 * 
+	 * @return bool
+	 *
+	 */
+
 	public static function boolean($variableToMakeBoolean) : bool {
 		return filter_var($variableToMakeBoolean, FILTER_VALIDATE_BOOLEAN);
 	}
