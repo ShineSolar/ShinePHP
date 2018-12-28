@@ -16,7 +16,7 @@ final class EasyHttp {
 		$this->headers = $headers;
 	}
 
-	public function makePostRequest(string $postFields) : array {
+	public function makePostRequest(string $postFields) {
 		$req = curl_init($this->url);
 		curl_setopt($req, CURLOPT_HTTPHEADER, $this->headers);
 		curl_setopt($req, CURLOPT_POST, 1);
@@ -27,7 +27,7 @@ final class EasyHttp {
 		return $response;
 	} 
 
-	public function makeGetRequest() : array {
+	public function makeGetRequest() {
 		$req = curl_init($this->url);
 		curl_setopt($req, CURLOPT_HTTPHEADER, $this->headers);
 		curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
@@ -165,7 +165,7 @@ final class EasyHttp {
 
 		// Check if JSON is null, if it is, throw HandleDataException, if not, return the decoded assoc array.
 		if (json_decode(file_get_contents($urlToRetrieveFrom), true) === null) {
-			throw new HandleDataException('No data retrieved from url: '.$urlToRetrieveFrom);
+			throw new EasyHttpException('No data retrieved from url: '.$urlToRetrieveFrom);
 		} else {
 			return json_decode(file_get_contents($urlToRetrieveFrom), true);
 		}
