@@ -2,7 +2,7 @@
     "name": "adammcgurk/shine-php",
     "description": "A simple PHP library to help speed development through the monotonous part of PHP programming (dealing with user input, DB connections, HTTP, etc...)",
     "type": "library",
-    "license": "MIT with a twist",
+    "license": "MIT",
     "authors": [
         {
             "name": "Adam McGurk",
