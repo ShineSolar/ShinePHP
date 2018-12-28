@@ -5,6 +5,5 @@ vendor/
 *.sublime-project
 *.sublime-workspace
 *.log
-composer.json
 composer.lock
 !.gitignore
