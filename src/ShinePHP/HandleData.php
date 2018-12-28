@@ -163,6 +163,23 @@ final class HandleData {
 		//
 	}
 
+	/**
+	 *
+	 * Validate and return a float value
+	 *
+	 * @access public
+	 *
+	 * @param mixed $number variable you want validated as a float
+	 * @param OPTIONAL bool $canBeZero if set to true, the return can be 0.00
+	 *
+	 * @throws ArgumentCountError when there are no parameters passed
+	 * @throws HandleDataException if $number cannot be validated as float
+	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
+	 * 
+	 * @return float
+	 *
+	 */
+
 	public static function float($number, bool $canBeZero = false) : float {
 
 		// sanitizing and validating the input as a float
@@ -180,6 +197,25 @@ final class HandleData {
 
 	}
 
+	/**
+	 *
+	 * Validate and return an integer variable
+	 *
+	 * GOTCHA: If you pass a float, like 7.50, it will just drop the decimal and trailing zeroes. So 7.50 will be returned as 75
+	 * 
+	 * @access public
+	 *
+	 * @param mixed $number variable you want validated as an integer
+	 * @param OPTIONAL bool $canBeZero if set to true, the return can be 0
+	 *
+	 * @throws ArgumentCountError when there are no parameters passed
+	 * @throws HandleDataException if $number cannot be validated as integer
+	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
+	 * 
+	 * @return int
+	 *
+	 */
+
 	public static function integer($number, bool $canBeZero = false) : int {
 
 		// sanitizing and validating the input as an integer
@@ -194,6 +230,7 @@ final class HandleData {
 		} else {
 			return $validatedInt;
 		}
+		
 	}
 
 	public function prepareAllForOutputValidation() : array {
