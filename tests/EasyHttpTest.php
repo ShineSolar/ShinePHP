@@ -4,7 +4,7 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
-require 'src/ShinePHP/EasyHttp.php';
+require_once 'src/ShinePHP/EasyHttp.php';
 use ShinePHP\{EasyHttp, EasyHttpException};
 
 final class HandleDataTest extends TestCase {
@@ -20,5 +20,5 @@ final class HandleDataTest extends TestCase {
 		$this->expectException(HandleDataException::class);
 		HandleData::turnJsonInputIntoArray();
 	}
-	
+
 }

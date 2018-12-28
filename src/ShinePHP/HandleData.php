@@ -69,7 +69,7 @@ final class HandleData {
 	 * @throws HandleDataException if $phone is not a valid United States phone number OR is an empty string
 	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
 	 * 
-	 * @return string validated URL
+	 * @return string validated phone
 	 *
 	 */
 
@@ -111,6 +111,7 @@ final class HandleData {
 	/**
 	 *
 	 * Sanitize and validate url
+	 * TODO add domain validation
 	 *
 	 * @access public
 	 *
