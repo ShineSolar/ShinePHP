@@ -159,8 +159,13 @@ final class HandleData {
 		return filter_var($variableToMakeBoolean, FILTER_VALIDATE_BOOLEAN);
 	}
 
-	public static function ipAddress(string $ip, bool $isIpV6 = false) : string {
-		//
+	public static function ipAddress(string $ip) : string {
+		$validatedIp = filter_var($ip, FILTER_VALIDATE_IP);
+		if ($validatedIp) {
+			return $validtedIp;
+		} else {
+			throw new HandleDataException('Not a valid ip address');
+		}
 	}
 
 	/**
@@ -230,7 +235,7 @@ final class HandleData {
 		} else {
 			return $validatedInt;
 		}
-		
+
 	}
 
 	public function prepareAllForOutputValidation() : array {

@@ -77,6 +77,12 @@ final class HandleDataTest extends TestCase {
     	HandleData::url('shinesolar.com');
     }
 
+    // Testing invalid ip addresses
+    public function testIpAddress() : void {
+    	$this->expectException(HandleDataException::class);
+    	HandleData::url('not a valid ip address');
+    }
+
     // Testing valid float
     public function testValidFloat() : void {
     	$float = HandleData::float('1.292716');
@@ -135,18 +141,6 @@ final class HandleDataTest extends TestCase {
 	public function testingInvalidJsonInputFromUrl() : void {
 		$this->expectException(HandleDataException::class);
 		HandleData::turnJsonInputIntoArray();
-	}
-
-	// Testing valid validation from htmlspecialchars
-	public function testingValidPrepareSingularForOutputValidation() : void {
-		$mitigatedXSS = HandleData::prepareSingularForOutputValidation('<script>alert("xss");</script>');
-		$this->assertEquals('&lt;script&gt;alert(&quot;xss&quot;);&lt;/script&gt;', $mitigatedXSS);
-	}
-
-	// Testing prepareSingularForOutputValidation() method with no arg
-	public function testingInvalidSingularOutputValidation() : void {
-		$this->expectException(ArgumentCountError::class);
-		HandleData::prepareSingularForOutputValidation();
 	}
 
 }
