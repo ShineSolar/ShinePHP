@@ -22,14 +22,18 @@ final class EasyHttp {
 		curl_setopt($req, CURLOPT_POST, 1);
 		curl_setopt($req, CURLOPT_POSTFIELDS, $jsonData);
 		curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
-		return curl_exec($req);
+		$response = curl_exec($req);
+		curl_close($req);
+		return $response;
 	} 
 
 	public function makeGetRequest() : array {
 		$req = curl_init($this->url);
 		curl_setopt($req, CURLOPT_HTTPHEADER, $this->headers);
 		curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
-		return curl_exec($req);
+		$response = curl_exec($req);
+		curl_close($req);
+		return $response;
 	}
 
 	/**
