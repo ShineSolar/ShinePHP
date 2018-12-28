@@ -133,7 +133,7 @@ final class HandleData {
 	 */
 
 	public static function url(string $url) : string {
-		$sanitizedUrl = filter_var($url, FILTER_SANITIZE_URL);
+		$sanitizedUrl = filter_var(self::string($url), FILTER_SANITIZE_URL);
 		if (filter_var($sanitizedUrl, FILTER_VALIDATE_URL)) {
 			return $sanitizedUrl;
 		} else {
