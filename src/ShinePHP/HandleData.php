@@ -164,28 +164,36 @@ final class HandleData {
 	}
 
 	public static function float($number, bool $canBeZero = false) : float {
+
+		// sanitizing and validating the input as a float
 		$sanitizedNumber = filter_var($number, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 		$validatedFloat = filter_var($sanitizedNumber, FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_THOUSAND);
+
+		// Doing the float checks and throwing exceptions or returning the valid float
 		if ($validatedFloat === false) {
 			throw new HandleDataException('Not a vaild float');
-		} else if ($canBeZero === false && $validatedFloat != 0) {
-			return $validatedFloat;
-		} else {
+		} else if (!$canBeZero && $validatedFloat === 0.00) {
 			throw new HandleDataException('Float cannot be 0. The return number is: '.$validatedFloat);
+		} else {
+			return $validatedFloat;
 		}
+
 	}
 
 	public static function integer($number, bool $canBeZero = false) : int {
+
+		// sanitizing and validating the input as an integer
 		$sanitizedNumber = filter_var($number, FILTER_SANITIZE_NUMBER_INT);
 		$validatedInt = filter_var($sanitizedNumber, FILTER_VALIDATE_INT);
+
+		// Doing the integer checks and throwing exceptions or returning the valid integer
 		if ($validatedInt === false) {
 			throw new HandleDataException('Not a vaild integer');
-		} else if ($canBeZero === false && $validatedInt !== 0) {
-			return $validatedInt;
-		} else {
+		} else if (!$canBeZero && $validatedInt === 0) {
 			throw new HandleDataException('Integer cannot be 0. The return number is: '.$validatedInt);
+		} else {
+			return $validatedInt;
 		}
-		//
 	}
 
 	public function prepareAllForOutputValidation() : array {

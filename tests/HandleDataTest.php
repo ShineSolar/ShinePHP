@@ -87,6 +87,8 @@ final class HandleDataTest extends TestCase {
     	$this->assertEquals(-1.292716, $negativeFloat);
     	$wholeNumber = HandleData::float('1');
     	$this->assertEquals(1.00, $wholeNumber);
+    	$zero = HandleData::float('0', true);
+    	$this->assertEquals(0, $zero);
     }
 
     // Testing invalid float passing 0
@@ -99,6 +101,28 @@ final class HandleDataTest extends TestCase {
     public function testInvalidFloatPassingString() : void {
     	$this->expectException(HandleDataException::class);
     	HandleData::float('not a valid float');
+    }
+
+    // Testing valid integer
+    public function testValidInteger() : void {
+    	$integer = HandleData::integer('2');
+    	$this->assertEquals(2, $integer);
+    	$floatToMakeInteger = HandleData::integer(-2);
+    	$this->assertEquals(-2, $floatToMakeInteger);
+    	$zero = HandleData::integer(0, true);
+    	$this->assertEquals('0', $zero);
+    }
+
+    // Testing invalid integer passing 0
+    public function testInvalidIntegerPassingZero() : void {
+    	$this->expectException(HandleDataException::class);
+    	HandleData::integer(0);
+    }
+
+    // Testing invalid integer passing a string
+    public function testInvalidIntegerPassingString() : void {
+    	$this->expectException(HandleDataException::class);
+    	HandleData::integer('not a valid float');
     }
 
 	// Testing valid JSON input from url
