@@ -77,10 +77,20 @@ final class HandleDataTest extends TestCase {
     	HandleData::url('shinesolar.com');
     }
 
+    // Testing valid ip addresses
+    public function testValidIpAddress() : void {
+    	$publicIp = HandleData::ipAddress('157.201.87.254');
+    	$this->assertEquals('157.201.87.254', $publicIp);
+    	$privateRange = HandleData::ipAddress('192.168.10.110');
+    	$this->assertEquals('192.168.10.110', $privateRange);
+    	$ipV6 = HandleData::ipAddress('::1');
+    	$this->assertEquals('::1', $ipV6);
+    }
+
     // Testing invalid ip addresses
     public function testIpAddress() : void {
     	$this->expectException(HandleDataException::class);
-    	HandleData::url('not a valid ip address');
+    	HandleData::ipAddress('256.101.7.10');
     }
 
     // Testing valid float

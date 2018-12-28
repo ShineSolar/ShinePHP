@@ -159,10 +159,26 @@ final class HandleData {
 		return filter_var($variableToMakeBoolean, FILTER_VALIDATE_BOOLEAN);
 	}
 
+	/**
+	 *
+	 * Validate and return an ip address
+	 *
+	 * @access public
+	 *
+	 * @param string $ip variable you want validated as an ip address
+	 *
+	 * @throws ArgumentCountError when there are no parameters passed
+	 * @throws HandleDataException if $ip cannot be validated as an ip address
+	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
+	 * 
+	 * @return string
+	 *
+	 */
+
 	public static function ipAddress(string $ip) : string {
 		$validatedIp = filter_var($ip, FILTER_VALIDATE_IP);
 		if ($validatedIp) {
-			return $validtedIp;
+			return $validatedIp;
 		} else {
 			throw new HandleDataException('Not a valid ip address');
 		}
