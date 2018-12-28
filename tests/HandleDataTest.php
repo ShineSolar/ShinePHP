@@ -120,12 +120,24 @@ final class HandleDataTest extends TestCase {
     	$this->assertEquals(2, $integer);
 
     	// Testing negative integer
-    	$floatToMakeInteger = HandleData::integer(-2);
-    	$this->assertEquals(-2, $floatToMakeInteger);
+    	$negativeInteger = HandleData::integer(-2);
+    	$this->assertEquals(-2, $negativeInteger);
 
     	// Testing 0 with no 0 strictness
     	$zero = HandleData::integer(0, true);
     	$this->assertEquals(0, $zero);
+
+    	/** 
+    	 * Phone Testing
+    	 */
+
+    	// Testing valid phone number with no country code
+    	$noCountryCodePhone = HandleData::phone('4086935992');
+    	$this->assertEquals('4086935992', $noCountryCodePhone);
+
+    	// Testing valid phone number with no country code
+    	$countryCodePhone = HandleData::phone('14086935992');
+    	$this->assertEquals('14086935992', $countryCodePhone);
 
     }
 
@@ -138,8 +150,11 @@ final class HandleDataTest extends TestCase {
     // Testing empty string with emptiness enforced
     public function testInvalidString() : void { $this->expectException(HandleDataException::class); HandleData::string('', false); }
 
-    // Testing invalid url (domain only)
+    // Testing invalid url
     public function testInvalidUrl() : void { $this->expectException(HandleDataException::class); HandleData::url('shinesolar.com'); }
+
+    // Testing empty url
+    public function testEmptyInvalidUrl() : void { $this->expectException(HandleDataException::class); HandleData::url(''); }
 
     // Testing invalid ip address (regular 4 octect numerals)
     public function testInvalidIpAddress() : void { $this->expectException(HandleDataException::class); HandleData::ipAddress('256.101.7.10'); }
@@ -156,16 +171,16 @@ final class HandleDataTest extends TestCase {
     // Testing invalid integer passing a string
     public function testInvalidIntegerPassingString() : void { $this->expectException(HandleDataException::class); HandleData::integer('not a valid integer'); }
 
-	// Testing valid JSON input from url
-	public function testingValidJsonInputFromUrl() : void {
-		$jsonRetrieved = HandleData::turnJsonInputIntoArray('http://127.0.0.1/');
-		$this->assertArrayHasKey('person_1', $jsonRetrieved);
-	}
+    // Testing invalid phone number
+    public function testInvalidPhoneNumber() : void { $this->expectException(HandleDataException::class); HandleData::phone('not a valid phone number'); }
 
-	// Testing non existent JSON input
-	public function testingInvalidJsonInputFromUrl() : void {
-		$this->expectException(HandleDataException::class);
-		HandleData::turnJsonInputIntoArray();
-	}
+    // Testing invalid phone number 10 digits, but starts with one
+    public function testInvalidPhoneNumberStartsWithOneOnlyTenDigits() : void { $this->expectException(HandleDataException::class); HandleData::phone('1408693599'); }
+
+    // Testing invalid phone number 11 digits, but does not start with one
+    public function testInvalidPhoneNumberStartsNoOneElevenDigits() : void { $this->expectException(HandleDataException::class); HandleData::phone('40869359921'); }
+
+    // Testing invalid phone number empty string
+    public function testInvalidPhoneNumberEmptyString() : void { $this->expectException(HandleDataException::class); HandleData::phone(''); }
 
 }

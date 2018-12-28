@@ -21,36 +21,6 @@ namespace ShinePHP;
 
 final class HandleData {
 
-	/** 
-	 *  @access public
-	 *	@var array This is the data set on class init 
-	 */
-	public $data;
-
-	/**
-	 *
-	 * @access public 
-	 * Sets the data as the class variable. 
-	 *
-	 * @param array $data This is the data input 
-	 * 
-	 * @throws ArgumentCountError when there are no parameters passed
-	 * @throws InvalidArgumentException when the parameter passed isn't an array
-	 * @throws HandleDataException when the array is empty
-	 *
-	 */
-
-	public function __construct(array $data) {
-
-		// Checking if array is empty, if it is, throw exception, if not set class data
-		if (empty($data)) {
-			throw new HandleDataException('There was no data in the array passed to the constructor');
-		} else {
-			$this->data = $data;
-		}
-
-	}
-
 	/**
 	 *
 	 * Makes it easy to validate an email address AND gives you control over the domain if you want
@@ -86,8 +56,30 @@ final class HandleData {
 		}
 	}
 
+	/**
+	 *
+	 * Sanitize and validate a United States Phone Number
+	 * TODO - Add 555 invalidation
+	 *
+	 * @access public
+	 *
+	 * @param string $phone string you want validated as a phone number
+	 *
+	 * @throws ArgumentCountError when there are no parameters passed
+	 * @throws HandleDataException if $phone is not a valid United States phone number OR is an empty string
+	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
+	 * 
+	 * @return string validated URL
+	 *
+	 */
+
 	public static function phone(string $phone) : string {
-		//
+		$strippedPhone = preg_replace('/[^0-9]/', '', self::string($phone, false));
+		if (preg_match('/^1?[2-9]{1}[0-9]{2}[0-9]{3}[0-9]{4}$/', $strippedPhone) !== 1) {
+			throw new HandleDataException('Invalid phone number');
+		} else {
+			return $strippedPhone;
+		}
 	}
 
 	/**
@@ -97,7 +89,7 @@ final class HandleData {
 	 * @access public
 	 *
 	 * @param string $string this is the string you want sanitized
-	 * @param OPTIONAL bool $canBeEmpty set to false when 
+	 * @param OPTIONAL bool $canBeEmpty set to false when the string cannot be empty
 	 *
 	 * @throws ArgumentCountError when there are no parameters passed
 	 * @throws HandleDataException if $canBeEmpty is false and the string is empty, throw cannot be empty exception
@@ -125,7 +117,7 @@ final class HandleData {
 	 * @param string $url string you want validated as URL
 	 *
 	 * @throws ArgumentCountError when there are no parameters passed
-	 * @throws HandleDataException if $url is not a valid URL
+	 * @throws HandleDataException if $url is not a valid URL OR is an empty string
 	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
 	 * 
 	 * @return string validated URL
@@ -133,7 +125,7 @@ final class HandleData {
 	 */
 
 	public static function url(string $url) : string {
-		$sanitizedUrl = filter_var(self::string($url), FILTER_SANITIZE_URL);
+		$sanitizedUrl = filter_var(self::string($url, false), FILTER_SANITIZE_URL);
 		if (filter_var($sanitizedUrl, FILTER_VALIDATE_URL)) {
 			return $sanitizedUrl;
 		} else {
@@ -254,41 +246,8 @@ final class HandleData {
 
 	}
 
-	public function prepareAllForOutputValidation() : array {
-		//
-		foreach ($this->data as $data) {
-			//
-		}
-	}
-
 	public static function prepareSingularForOutputValidation(string $varToPrepare) : string {
 		return htmlspecialchars($varToPrepare);
-	}
-
-	/**
-	 *
-	 * Makes it easy to accept JSON input from any url
-	 *
-	 * @access public
-	 *
-	 * @param OPTIONAL string $urlToRetrieveFrom this is the url that you want to pull JSON data from. Defaults to php://input because mostly it deals with inputs
-	 *
-	 * @throws HandleDataException there is null data retrieved from the url
-	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
-	 * 
-	 * @return array of json data
-	 *
-	 */
-
-	public static function turnJsonInputIntoArray(string $urlToRetrieveFrom = 'php://input') : array {
-
-		// Check if JSON is null, if it is, throw HandleDataException, if not, return the decoded assoc array.
-		if (json_decode(file_get_contents($urlToRetrieveFrom), true) === null) {
-			throw new HandleDataException('No data retrieved from url: '.$urlToRetrieveFrom);
-		} else {
-			return json_decode(file_get_contents($urlToRetrieveFrom), true);
-		}
-		
 	}
 
 }
