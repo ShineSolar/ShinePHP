@@ -10,5 +10,10 @@
             "email": "amcgurk@shinesolar.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "ShinePHP\\": "src/"
+        }
+    },
     "require": {}
 }
