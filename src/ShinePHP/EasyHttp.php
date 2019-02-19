@@ -8,7 +8,16 @@ use ShinePHP\{HandleData, HandleDataException};
 
 final class EasyHttp {
 
+	/** 
+	 *  @access protected
+	 *	@var string This is the base URL that you will be using to make calls on this instance of the class
+	 */
 	protected $url;
+
+	/** 
+	 *  @access protected
+	 *	@var array This is the array of headers that will be passed on every request
+	 */
 	protected $headers;
 
 	public function __construct(string $url, array $headers = []) {
@@ -16,18 +25,23 @@ final class EasyHttp {
 		$this->headers = $headers;
 	}
 
-	public function makePostRequest(string $postFields) {
+	public function makePostRequest(string $postFields, array $queryParams = []) {
 		$req = curl_init($this->url);
 		curl_setopt($req, CURLOPT_HTTPHEADER, $this->headers);
 		curl_setopt($req, CURLOPT_POST, 1);
-		curl_setopt($req, CURLOPT_POSTFIELDS, $jsonData);
+
+		if (!empty($queryParams)) {
+			curl_setopt($req, CURLOPT_POSTFIELDS, http_build_query($queryParams));
+		}
+
+		curl_setopt($req, CURLOPT_POSTFIELDS, $postFields);
 		curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
 		$response = curl_exec($req);
 		curl_close($req);
 		return $response;
 	} 
 
-	public function makeGetRequest() {
+	public function makeGetRequest(array $queryParams = []) {
 		$req = curl_init($this->url);
 		curl_setopt($req, CURLOPT_HTTPHEADER, $this->headers);
 		curl_setopt($req, CURLOPT_RETURNTRANSFER, true);

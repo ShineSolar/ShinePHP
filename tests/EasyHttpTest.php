@@ -19,7 +19,7 @@ final class HandleDataTest extends TestCase {
 
 		// POST request
 		$EasyHttpPostReq = new EasyHttp('https://jsonplaceholder.typicode.com/posts', ['Content-Type' => 'application/json']);
-		$postRes = $EasyHttpPostReq->makePostRequest(json_encode(array('title' => 'lorem ipsum', 'userId' => 1000, 'body' => 'setet dolor')));
+		$postRes = $EasyHttpPostReq->makePostRequest(json_encode(array('title' => 'lorem ipsum', 'userId' => 1000, 'body' => 'setet dolor')), ['name' => 'adam']);
 		$jsonPostRes = json_decode($postRes, true);
 		$this->assertArrayHasKey('id', $jsonPostRes);
 

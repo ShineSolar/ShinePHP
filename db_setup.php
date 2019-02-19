@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // Getting the database server
 while ($confirmdbserver !== 'yes' && $confirmdbserver !== 'y') {
