@@ -43,4 +43,4 @@ echo "MySQL User name: $user \n";
 
 echo "MySQL Password: $password \n";
 
-var_dump(file('src/ShinePHP/TestingCrud.php'));
+// var_dump(file('src/ShinePHP/TestingCrud.php'));

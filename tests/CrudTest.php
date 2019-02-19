@@ -118,13 +118,13 @@ final class CrudTest extends TestCase {
     public function testValidSanitizingTableNames() : void {
 
     	// With whitelist
-    	$this->assertEquals('table_1', Crud::sanitizeTable('table_1', ['table_1', 'table_2']));
+    	$this->assertEquals('table_1', Crud::sanitizeMysql('table_1', ['table_1', 'table_2']));
 
     	// No whitelist with no backticks
-    	$this->assertEquals('`table_1`', Crud::sanitizeTable('table_1'));
+    	$this->assertEquals('`table_1`', Crud::sanitizeMysql('table_1'));
 
     	// No whitelist with backticks 
-    	$this->assertEquals('```table_1```', Crud::sanitizeTable('`table_1`'));
+    	$this->assertEquals('```table_1```', Crud::sanitizeMysql('`table_1`'));
     }
 
     // Making sure non existent table names throw an exception
@@ -132,7 +132,7 @@ final class CrudTest extends TestCase {
 
     	// Testing a table name that doesn't exist in the whitelist
     	$this->expectException(CrudException::class);
-    	Crud::sanitizeTable('table_1237812031', ['table_1', 'table_2']);
+    	Crud::sanitizeMysql('table_1237812031', ['table_1', 'table_2']);
 
     }
 

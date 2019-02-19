@@ -80,7 +80,7 @@ final class Crud {
 	 *
 	 */
 
-	public function makeChangeToDatabase(string $statement, array $values, int $rowsReturned = 0) : void {
+	public function makeChangeToDatabase(string $statement, array $values = [], int $rowsReturned = 0) : void {
 
 		// Checking if placeholder values exist, if not, a simple query will suffice
 		if (empty($values) && !strpos($statement, '?')) {
@@ -124,7 +124,7 @@ final class Crud {
 	 *
 	 */
 
-	public function readFromDatabase(string $statement, array $values) : array {
+	public function readFromDatabase(string $statement, array $values = []) : array {
 
 		// Checking if placeholder values exist, if not, a simple query will suffice
 		if (empty($values) && !strpos($statement, '?')) {
@@ -149,23 +149,23 @@ final class Crud {
 	 *
 	 * @access public
 	 *
-	 * @param string $table this is the table you want to sanitize
-	 * @param OPTIONAL array $tableWhiteList if you want a whitelist to validate the dynamic table name THIS IS THE MOST SECURE OPTION.
+	 * @param string $name this is the name you want to sanitize
+	 * @param OPTIONAL array $whiteList if you want a whitelist to validate the dynamic name THIS IS THE MOST SECURE OPTION.
 	 *
-	 * @throws CrudException when table does not exist in table whitelist
+	 * @throws CrudException when name does not exist in whitelist
 	 * @throws InvalidArgumentException when any of the parameters are passed with the incorrect type
 	 * 
 	 * @return string
 	 *
 	 */
 
-	public static function sanitizeTable(string $table, array $tableWhiteList = []) : string {
-		if (!empty($tableWhiteList) && array_search($table, $tableWhiteList) === false) {
+	public static function sanitizeMysql(string $name, array $whiteList = []) : string {
+		if (!empty($whiteList) && array_search($name, $whiteList) === false) {
 			throw new CrudException('Value does not exist in value whitelist.');
-		} else if (!empty($tableWhiteList) && array_search($table, $tableWhiteList) !== false) {
-			return $table;
+		} else if (!empty($whiteList) && array_search($name, $whiteList) !== false) {
+			return $name;
 		} else {
-			return '`'.str_replace('`','``',$table).'`';
+			return '`'.str_replace('`','``',$name).'`';
 		}
 	}
 
