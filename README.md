@@ -92,12 +92,12 @@ array(1) {
 }
 ```
 
-You can also access the name like this:
+You access the name like this:
 ```php
 var_dump($response[0]['name']);
 ```
 
-Which outputs:
+Which represents:
 ```php
 string(11) "Adam McGurk"
 ```
