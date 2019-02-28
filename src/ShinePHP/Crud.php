@@ -80,7 +80,7 @@ final class Crud {
 	 *
 	 */
 
-	public function makeChangeToDatabase(string $statement, array $values = [], int $rowsReturned = 0) : void {
+	public function makeChangeToDatabase(string $statement, array $values = [], int $rowsAffected = 0) : void {
 
 		// Checking if placeholder values exist, if not, a simple query will suffice
 		if (empty($values) && !strpos($statement, '?')) {
@@ -90,8 +90,8 @@ final class Crud {
 			$rowCount = $stmt->rowCount();
 
 			// Confirming row count integrity
-			if ($rowsReturned !== 0 && $rowsReturned !== $rowCount) {
-				throw new CrudException('Incorrect number of rows returned. The expected number of rows to be returned is '.$rowsReturned.' and '.$rowCount.' were returned.');
+			if ($rowsAffected !== 0 && $rowsAffected !== $rowCount) {
+				throw new CrudException('Incorrect number of rows affected. The expected number of rows to be affected is '.$rowsAffected.' and '.$rowCount.' were affected.');
 			}
 		} else {
 
@@ -101,8 +101,8 @@ final class Crud {
 			$rowCount = $stmt->rowCount();
 
 			// Confirming row count integrity
-			if ($rowsReturned !== 0 && $rowsReturned !== $rowCount) {
-				throw new CrudException('Incorrect number of rows returned. The expected number of rows to be returned is '.$rowsReturned.' and '.$rowCount.' were returned.');
+			if ($rowsAffected !== 0 && $rowsAffected !== $rowCount) {
+				throw new CrudException('Incorrect number of rows affected. The expected number of rows to be affected is '.$rowsAffected.' and '.$rowCount.' were affected.');
 			}
 		}
 

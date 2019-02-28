@@ -35,7 +35,7 @@ Pretty much, unless you're in the 5% of PHP developers in the world, Shine PHP w
 - The cURL driver for PHP
 - The PCRE driver for PHP
 
-## Installation
+## Installation and Execution
 
 ShinePHP is available on Packagist (using semantic versioning), and installation via Composer is the recommended way to install ShinePHP. Just add this line to your composer.json file:
 
@@ -51,17 +51,30 @@ composer require adammcgurk/shine-php
 
 And right now, until the work being done in the automate_sql_details branch is finished, you need to go into the Crud class in the vendor/adammcgurk/shine-php/src/ShinePHP/ directory and input your database credentials on lines 46, 51, and 52 (The database name, MySQL username, and MySQL password respectively) to make sure the Crud class actually works. And the permissions given to your MySQL client need to be restricted to the localhost server, and given to no others.
 
+Here is how you include the library:
+
+```php
+<?php
+declare(strict_types=1);
+
+require_once 'path/to/vendor/autoload.php';
+use ShinePHP\{Crud, CrudException, HandleData, HandleDataException, EasyHttp, EasyHttpException};
+
+// Put the rest of your code here
+
+```
+
 # Class and Method documentation
 
 ## Crud
 
 ### Method Signatures and examples
 
-#### readFromDatabase(string $sql, array $values = []) : array
+#### readFromDatabase(string $statement, array $values = []) : array
 
-The readFromDatabase class method is used for SELECT SQL statement execution. You supply a SQL statement in the first parameter, your inputs in the second paramter (empty by default), and you receive a multi-dimensional array back.
+The readFromDatabase class method is used for SELECT SQL statement execution. You supply a SQL statement in the first parameter (with placeholders in the form of a question mark '?' representing your input data), your inputs in the second paramter (empty by default), and you receive a multi-dimensional array back.
 
-##### Example:
+##### readFromDatabase() Example 1:
 
 Databse Schema:
 ```sql
@@ -76,8 +89,14 @@ PHP Code:
 ```php
 $id = 123;
 $sql = 'SELECT name FROM table WHERE id = ?';
-$Crud = new Crud();
-$response = $Crud->readFromDatabase($sql,[$id]);
+try {
+	$Crud = new Crud();
+	$response = $Crud->readFromDatabase($sql,[$id]);
+} catch (CrudException $cex) {
+	echo "Uh oh! There's a problem! Crud probably doesn't have the right MySQL user details, but let's check the error message here: ".$cex->getMessage();
+} catch (PDOException $pex) {
+	echo "Uh oh! There's actually a problem with the SQL itself most likely, but let's check the error message: ".$pex->getMessage();
+}
 var_dump($response);
 ```
 
@@ -102,3 +121,64 @@ Which represents:
 "Adam McGurk"
 ```
 
+
+#### makeChangeToDatabase(string $statement, array $values = [], int $rowsAffected = 0) : void
+
+The makeChangeToDatabase class method is used for INSERT, UPDATE, or DELETE SQL statement execution. You supply a SQL statement in the first parameter (with placeholders in the form of a question mark '?' representing your input data), your inputs in the second paramter (empty by default), and you can optionally supply an integer representing the number of rows you expect to be affected. If this is zero, the feature is turned off. This is the default.
+
+##### makeChangeToDatabase() example #1:
+
+Databse Schema:
+```sql
+CREATE TABLE table (id int(3), name varchar(100));
+
+INSERT INTO table VALUES (123,'Adam McGurk');
+INSERT INTO table VALUES (321,'Joe Bob');
+INSERT INTO table VALUES (231,'Jane Doe');
+```
+
+PHP Code:
+```php
+$id = 123;
+$sql = 'DELETE FROM table WHERE id = ?';
+try {
+	$Crud = new Crud();
+	$response = $Crud->makeChangeToDatabase($sql,[$id]);
+} catch (CrudException $cex) {
+	echo "Uh oh! There's a problem! Crud probably doesn't have the right MySQL user details, or an incorrect number of rows were affected, but let's check the error message here: ".$cex->getMessage();
+} catch (PDOException $pex) {
+	echo "Uh oh! There's actually a problem with the SQL itself most likely, but let's check the error message: ".$pex->getMessage();
+}
+```
+
+Which deletes the record with an ID matching 123.
+
+##### makeChangeToDatabase() example #2 (showing the rowsAffected feature):
+
+Databse Schema:
+```sql
+CREATE TABLE table (id int(3), name varchar(100));
+
+INSERT INTO table VALUES (123,'Adam McGurk');
+INSERT INTO table VALUES (321,'Joe Bob');
+INSERT INTO table VALUES (231,'Jane Doe');
+```
+
+PHP Code:
+```php
+$id = 39023812983;
+$sql = 'DELETE FROM table WHERE id = ?';
+try {
+	$Crud = new Crud();
+	$response = $Crud->makeChangeToDatabase($sql,[$id], 1);
+} catch (CrudException $cex) {
+	echo "Uh oh! There's a problem! Crud probably doesn't have the right MySQL user details, or an incorrect number of rows were affected, but let's check the error message here: ".$cex->getMessage();
+} catch (PDOException $pex) {
+	echo "Uh oh! There's actually a problem with the SQL itself most likely, but let's check the error message: ".$pex->getMessage();
+}
+```
+
+Outputs:
+```php
+Uh oh! There's a problem! Crud probably doesn't have the right MySQL user details, or an incorrect number of rows were affected, but let's check the error message here: Incorrect number of rows affected. The expected number of rows to be affected is 1 and 0 were affected.
+```
