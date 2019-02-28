@@ -179,6 +179,6 @@ try {
 ```
 
 Outputs:
-```php
+```
 Uh oh! There's a problem! Crud probably doesn't have the right MySQL user details, or an incorrect number of rows were affected, but let's check the error message here: Incorrect number of rows affected. The expected number of rows to be affected is 1 and 0 were affected.
 ```
