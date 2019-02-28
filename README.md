@@ -94,11 +94,11 @@ array(1) {
 
 You access the name like this:
 ```php
-var_dump($response[0]['name']);
+$response[0]['name'];
 ```
 
 Which represents:
 ```php
-string(11) "Adam McGurk"
+"Adam McGurk"
 ```
 
