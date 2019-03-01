@@ -1,5 +1,9 @@
 # ShinePHP
+
 This is a very simple PHP library that allows developers to SHINE!
+
+### GO TO:
+
 
 ## Class Features
 - Secure by default CRUD (Create, Read, Update, Delete) database interactions
