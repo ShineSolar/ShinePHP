@@ -40,42 +40,53 @@ final class HandleData {
 		$sanitized_email = filter_var($email, FILTER_SANITIZE_EMAIL);
 		$domain = substr($sanitized_email, strpos($sanitized_email, "@") + 1);
 
-		// Checking if 
+		// Checking if it is actually a valid email after the sanitization
 		if (filter_var($sanitized_email, FILTER_VALIDATE_EMAIL) !== false) {
+
+			// doing the domain check
 			if ($optional_domain !== '' && $domain !== $optional_domain) {
 				return false;
 			} else {
 				return $sanitized_email;
 			}
+
 		} else {
 			return false;
 		}
+
 	}
 
 	/**
 	 *
-	 * Sanitize and validate a United States Phone Number
-	 * TODO - Add 555 invalidation
+	 * Sanitize and validate a United States Phone Number, optionally including the "1" area code
 	 *
 	 * @access public
 	 *
 	 * @param string $phone string you want validated as a phone number
-	 *
-	 * @throws ArgumentCountError when there are no parameters passed
-	 * @throws HandleDataException if $phone is not a valid United States phone number OR is an empty string
-	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
+	 * @param OPTIONAL bool $include_country_code decide if you want a leading one in it or not
 	 * 
-	 * @return string validated phone
+	 * @return mixed validated phone or false on failure
 	 *
 	 */
 
-	public static function american_phone(string $phone) : string {
-		$strippedPhone = preg_replace('/[^0-9]/', '', self::string($phone, false));
-		if (preg_match('/^1?[2-9]{1}[0-9]{2}[0-9]{3}[0-9]{4}$/', $strippedPhone) !== 1) {
-			throw new HandleDataException('Invalid phone number');
+	public static function american_phone(string $phone, bool $include_country_code = false) {
+
+		$stripped_phone = preg_replace('/[^0-9]/', '', self::string($phone, false));
+
+		// checking to see if it just matches basic phone validation anyways
+		if (preg_match('/^1?[2-9]{1}[0-9]{2}[0-9]{3}[0-9]{4}$/', $stripped_phone) !== 1) {
+
+			// return false on failure
+			return false;
+
 		} else {
-			return $strippedPhone;
+
+			// checking the country code flag
+			if ($include_country_code) { return (substr($stripped_phone,0,1) === '1' ? $stripped_phone : '1'.$stripped_phone); } 
+			else { return (substr($stripped_phone,0,1) === '1' ? substr($stripped_phone,1) : $stripped_phone); }
+
 		}
+
 	}
 
 	/**
@@ -86,22 +97,19 @@ final class HandleData {
 	 *
 	 * @param string $string this is the string you want sanitized
 	 * @param OPTIONAL bool $canBeEmpty set to false when the string cannot be empty
-	 *
-	 * @throws ArgumentCountError when there are no parameters passed
-	 * @throws HandleDataException if $canBeEmpty is false and the string is empty, throw cannot be empty exception
-	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
 	 * 
-	 * @return string sanitized string
+	 * @return mixed the sanitized string if successful, or false if not
 	 *
 	 */
 
-	public static function string($string, bool $canBeEmpty = true) : string {
-		$sanitizedString = filter_var($string, FILTER_SANITIZE_STRING);
-		if ($canBeEmpty === false && $sanitizedString === '') {
-			throw new HandleDataException('Data cannot be empty');
-		} else {
-			return $sanitizedString;
-		}
+	public static function string($string, bool $can_be_empty = true) {
+
+		// sanitizing the actual string
+		$sanitized_string = filter_var($string, FILTER_SANITIZE_STRING);
+
+		// running the check
+		return ($can_be_empty === false && $sanitized_string === '' ? false : $sanitized_string);
+
 	}
 
 	/**
@@ -112,22 +120,19 @@ final class HandleData {
 	 * @access public
 	 *
 	 * @param string $url string you want validated as URL
-	 *
-	 * @throws ArgumentCountError when there are no parameters passed
-	 * @throws HandleDataException if $url is not a valid URL OR is an empty string
-	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
 	 * 
-	 * @return string validated URL
+	 * @return mixed validated URL on success or false
 	 *
 	 */
 
-	public static function url(string $url) : string {
-		$sanitizedUrl = filter_var(self::string($url, false), FILTER_SANITIZE_URL);
-		if (filter_var($sanitizedUrl, FILTER_VALIDATE_URL)) {
-			return $sanitizedUrl;
-		} else {
-			throw new HandleDataException('Invalid URL passed');
-		}
+	public static function url(string $url) {
+
+		// sanitizing the url
+		$sanitized_url = filter_var(self::string($url, false), FILTER_SANITIZE_URL);
+
+		// returning the values
+		return (filter_var($sanitized_url, FILTER_VALIDATE_URL) ? $sanitized_url : false);
+
 	}
 
 	/**
@@ -142,9 +147,7 @@ final class HandleData {
 	 *
 	 */
 
-	public static function boolean($variable_to_make_boolean) : bool {
-		return filter_var($variable_to_make_boolean, FILTER_VALIDATE_BOOLEAN);
-	}
+	public static function boolean($variable_to_make_boolean) : bool { return filter_var($variable_to_make_boolean, FILTER_VALIDATE_BOOLEAN); }
 
 	/**
 	 *
@@ -153,23 +156,12 @@ final class HandleData {
 	 * @access public
 	 *
 	 * @param string $ip variable you want validated as an ip address
-	 *
-	 * @throws ArgumentCountError when there are no parameters passed
-	 * @throws HandleDataException if $ip cannot be validated as an ip address
-	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
 	 * 
-	 * @return string
+	 * @return string of the ip address on success or false on failure
 	 *
 	 */
 
-	public static function ipAddress(string $ip) : string {
-		$validated_ip = filter_var($ip, FILTER_VALIDATE_IP);
-		if ($validated_ip) {
-			return $validated_ip;
-		} else {
-			throw new HandleDataException('Not a valid ip address');
-		}
-	}
+	public static function ip(string $ip) { return filter_var($ip, FILTER_VALIDATE_IP); }
 
 	/**
 	 *
@@ -178,29 +170,25 @@ final class HandleData {
 	 * @access public
 	 *
 	 * @param mixed $number variable you want validated as a float
-	 * @param OPTIONAL bool $canBeZero if set to true, the return can be 0.00
-	 *
-	 * @throws ArgumentCountError when there are no parameters passed
-	 * @throws HandleDataException if $number cannot be validated as float
-	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
+	 * @param OPTIONAL bool $can_be_zero if set to true, the return can be 0.00
 	 * 
 	 * @return float
 	 *
 	 */
 
-	public static function float($number, bool $canBeZero = false) : float {
+	public static function float($number, bool $can_be_zero = false) : float {
 
 		// sanitizing and validating the input as a float
-		$sanitizedNumber = filter_var($number, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-		$validatedFloat = filter_var($sanitizedNumber, FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_THOUSAND);
+		$sanitized_number = filter_var($number, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+		$validated_float = filter_var($sanitized_number, FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_THOUSAND);
 
 		// Doing the float checks and throwing exceptions or returning the valid float
-		if ($validatedFloat === false) {
-			throw new HandleDataException('Not a vaild float');
-		} else if (!$canBeZero && $validatedFloat === 0.00) {
-			throw new HandleDataException('Float cannot be 0. The return number is: '.$validatedFloat);
+		if ($validated_float === false) {
+			return false;
+		} else if (!$can_be_zero && $validated_float === 0.00) {
+			return false;
 		} else {
-			return $validatedFloat;
+			return $validated_float;
 		}
 
 	}

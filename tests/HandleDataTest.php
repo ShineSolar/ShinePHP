@@ -23,6 +23,26 @@ final class HandleDataTest extends TestCase {
     	$domainToValidateEmail = HandleData::email('amcgurk@shinesolar.com', 'shinesolar.com');
     	$this->assertEquals('amcgurk@shinesolar.com', $domainToValidateEmail);
 
+        /** 
+         * Phone Testing
+         */
+
+        // Testing valid phone number with no country code
+        $noCountryCodePhone = HandleData::american_phone('4086935992');
+        $this->assertEquals('4086935992', $noCountryCodePhone);
+
+        // Testing valid phone number with no country code
+        $countryCodePhone = HandleData::american_phone('14086935992');
+        $this->assertEquals('4086935992', $countryCodePhone);
+
+        // Testing valid phone number with extra characters sent through
+        $countryCodePhone = HandleData::american_phone('+1 (408) 693-5992', true);
+        $this->assertEquals('14086935992', $countryCodePhone);
+
+        // Testing valid phone number with a desired appended country code
+        $noCountryCodePhone = HandleData::american_phone('4086935992', true);
+        $this->assertEquals('14086935992', $noCountryCodePhone);
+
     	/** 
     	 * String Testing
     	 */
@@ -52,19 +72,19 @@ final class HandleDataTest extends TestCase {
     	 */
 
     	// Testing public IP address	
-    	$publicIp = HandleData::ipAddress('157.201.87.254');
+    	$publicIp = HandleData::ip('157.201.87.254');
     	$this->assertEquals('157.201.87.254', $publicIp);
 
     	// Testing private IP address
-    	$privateRange = HandleData::ipAddress('192.168.10.110');
+    	$privateRange = HandleData::ip('192.168.10.110');
     	$this->assertEquals('192.168.10.110', $privateRange);
 
     	// Testing IPV6
-    	$ipV6 = HandleData::ipAddress('::1');
+    	$ipV6 = HandleData::ip('::1');
     	$this->assertEquals('::1', $ipV6);
 
     	// Testing subnet masks
-    	$subnetMask = HandleData::ipAddress('255.255.255.0');
+    	$subnetMask = HandleData::ip('255.255.255.0');
     	$this->assertEquals('255.255.255.0', $subnetMask);
 
     	/** 
@@ -107,22 +127,6 @@ final class HandleDataTest extends TestCase {
     	$zero = HandleData::integer(0, true);
     	$this->assertEquals(0, $zero);
 
-    	/** 
-    	 * Phone Testing
-    	 */
-
-    	// Testing valid phone number with no country code
-    	$noCountryCodePhone = HandleData::american_phone('4086935992');
-    	$this->assertEquals('4086935992', $noCountryCodePhone);
-
-    	// Testing valid phone number with no country code
-    	$countryCodePhone = HandleData::american_phone('14086935992');
-    	$this->assertEquals('14086935992', $countryCodePhone);
-
-    	// Testing valid phone number with extra characters sent through
-    	$countryCodePhone = HandleData::american_phone('+1 (408) 693-5992');
-    	$this->assertEquals('14086935992', $countryCodePhone);
-
     }
 
     // Testing invalid emails
@@ -131,17 +135,31 @@ final class HandleDataTest extends TestCase {
     // Testing invalid domain to validate against an address
     public function testInvalidDomainOnEmail() : void { $this->assertFalse(HandleData::email('amcgurk@shinesolar.com', 'gmail.com')); }
 
-/*    // Testing empty string with emptiness enforced
-    public function testInvalidString() : void { $this->assertFalse(HandleDataException::class); HandleData::string('', false); }
+    // Testing invalid phone number
+    public function testInvalidPhoneNumber() : void { $this->assertFalse(HandleData::american_phone('not a valid phone number')); }
+
+    // Testing invalid phone number 10 digits, but starts with one
+    public function testInvalidPhoneNumberStartsWithOneOnlyTenDigits() : void { $this->assertFalse(HandleData::american_phone('1408693599')); }
+
+    // Testing invalid phone number 11 digits, but does not start with one
+    public function testInvalidPhoneNumberStartsNoOneElevenDigits() : void { $this->assertFalse(HandleData::american_phone('40869359921')); }
+
+    // Testing invalid phone number empty string
+    public function testInvalidPhoneNumberEmptyString() : void { $this->assertFalse(HandleData::american_phone('')); }    
+
+    // Testing empty string with emptiness enforced
+    public function testInvalidString() : void { $this->assertFalse(HandleData::string('', false));}
 
     // Testing invalid url
-    public function testInvalidUrl() : void { $this->assertFalse(HandleDataException::class); HandleData::url('shinesolar.com'); }
+    public function testInvalidUrl() : void { $this->assertFalse(HandleData::url('shinesolar.com')); }
 
     // Testing empty url
-    public function testEmptyInvalidUrl() : void { $this->assertFalse(HandleDataException::class); HandleData::url(''); }
+    public function testEmptyInvalidUrl() : void { $this->assertFalse(HandleData::url('')); }
 
     // Testing invalid ip address (regular 4 octect numerals)
-    public function testInvalidIpAddress() : void { $this->assertFalse(HandleDataException::class); HandleData::ipAddress('256.101.7.10'); }
+    public function testInvalidIpAddress() : void { $this->assertFalse(HandleData::ip('256.101.7.10')); }
+
+/*
 
     // Testing invalid float passing 0
     public function testInvalidFloatPassingZero() : void { $this->assertFalse(HandleDataException::class); HandleData::float(0); }
@@ -153,18 +171,6 @@ final class HandleDataTest extends TestCase {
     public function testInvalidIntegerPassingZero() : void { $this->assertFalse(HandleDataException::class); HandleData::integer(0); }
 
     // Testing invalid integer passing a string
-    public function testInvalidIntegerPassingString() : void { $this->assertFalse(HandleDataException::class); HandleData::integer('not a valid integer'); }
-
-    // Testing invalid phone number
-    public function testInvalidPhoneNumber() : void { $this->assertFalse(HandleDataException::class); HandleData::american_phone('not a valid phone number'); }
-
-    // Testing invalid phone number 10 digits, but starts with one
-    public function testInvalidPhoneNumberStartsWithOneOnlyTenDigits() : void { $this->assertFalse(HandleDataException::class); HandleData::american_phone('1408693599'); }
-
-    // Testing invalid phone number 11 digits, but does not start with one
-    public function testInvalidPhoneNumberStartsNoOneElevenDigits() : void { $this->assertFalse(HandleDataException::class); HandleData::american_phone('40869359921'); }
-
-    // Testing invalid phone number empty string
-    public function testInvalidPhoneNumberEmptyString() : void { $this->assertFalse(HandleDataException::class); HandleData::american_phone(''); }*/
+    public function testInvalidIntegerPassingString() : void { $this->assertFalse(HandleDataException::class); HandleData::integer('not a valid integer'); }*/
 
 }
