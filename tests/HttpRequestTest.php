@@ -15,7 +15,7 @@ final class HttpRequestTest extends TestCase {
 		$EasyHttpGetReq = new HttpRequest('https://jsonplaceholder.typicode.com/posts', ['Content-Type' => 'application/json']);
 		$getRes = $EasyHttpGetReq->get();
 		$jsonGetRes = json_decode($getRes, true);
-		$this->assertArrayHasKey('id', $jsonGetRes);
+		$this->assertArrayHasKey('id', $jsonGetRes[0]);
 
 		// POST request
 		$EasyHttpPostReq = new HttpRequest('https://jsonplaceholder.typicode.com/posts', ['Content-Type' => 'application/json']);
@@ -27,7 +27,8 @@ final class HttpRequestTest extends TestCase {
 
 	// Testing valid JSON input from url (will usually be from php://input though)
 	public function testingValidJsonInputFromUrl() : void {
-		$jsonRetrieved = HttpRequest::get_json('https://jsonplaceholder.typicode.com/posts');
+		$jsonRetrieved = HttpRequest::get_json_input('https://jsonplaceholder.typicode.com/posts');
 		$this->assertArrayHasKey(50, $jsonRetrieved);
 	}
+
 }
