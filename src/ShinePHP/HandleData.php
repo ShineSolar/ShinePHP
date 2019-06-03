@@ -28,31 +28,27 @@ final class HandleData {
 	 * @access public
 	 *
 	 * @param string $email this is the string you want validated as an email address
-	 * @param OPTIONAL string $domainToValidate only pass a paramter to this if you only want email addresses belonging to certain domains to be validated
-	 *
-	 * @throws ArgumentCountError when there are no parameters passed
-	 * @throws HandleDataException the email passed isn't a valid email OR when a valid email doesn't validate to the domain
-	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
+	 * @param OPTIONAL string $optional_domain only pass a paramter to this if you only want email addresses belonging to certain domains to be validated
 	 * 
-	 * @return string valid email address
+	 * @return mixed valid email address or false on failure
 	 *
 	 */
 
-	public static function email(string $email, string $domainToValidate = '') : string {
+	public static function email(string $email, string $optional_domain = '') {
 
 		// setting the original variables
-		$sanitizedEmail = filter_var($email, FILTER_SANITIZE_EMAIL);
-		$emailDomain = substr($sanitizedEmail, strpos($sanitizedEmail, "@") + 1);
+		$sanitized_email = filter_var($email, FILTER_SANITIZE_EMAIL);
+		$domain = substr($sanitized_email, strpos($sanitized_email, "@") + 1);
 
 		// Checking if 
-		if (filter_var($sanitizedEmail, FILTER_VALIDATE_EMAIL) !== false) {
-			if ($domainToValidate !== '' && $emailDomain !== $domainToValidate) {
-				throw new HandleDataException('Email does not adhere to the domain validation passed');
+		if (filter_var($sanitized_email, FILTER_VALIDATE_EMAIL) !== false) {
+			if ($optional_domain !== '' && $domain !== $optional_domain) {
+				return false;
 			} else {
-				return $sanitizedEmail;
+				return $sanitized_email;
 			}
 		} else {
-			throw new HandleDataException('String passed was not a valid email address');
+			return false;
 		}
 	}
 
@@ -73,7 +69,7 @@ final class HandleData {
 	 *
 	 */
 
-	public static function us_phone(string $phone) : string {
+	public static function american_phone(string $phone) : string {
 		$strippedPhone = preg_replace('/[^0-9]/', '', self::string($phone, false));
 		if (preg_match('/^1?[2-9]{1}[0-9]{2}[0-9]{3}[0-9]{4}$/', $strippedPhone) !== 1) {
 			throw new HandleDataException('Invalid phone number');
@@ -136,20 +132,18 @@ final class HandleData {
 
 	/**
 	 *
-	 * Return a boolean
+	 * Return a boolean based on any data you provide
 	 *
 	 * @access public
 	 *
-	 * @param mixed $variableToMakeBoolean variable you want returned as a boolean
-	 *
-	 * @throws ArgumentCountError when there are no parameters passed
+	 * @param mixed $variable_to_make_boolean variable you want returned as a boolean
 	 * 
 	 * @return bool
 	 *
 	 */
 
-	public static function boolean($variableToMakeBoolean) : bool {
-		return filter_var($variableToMakeBoolean, FILTER_VALIDATE_BOOLEAN);
+	public static function boolean($variable_to_make_boolean) : bool {
+		return filter_var($variable_to_make_boolean, FILTER_VALIDATE_BOOLEAN);
 	}
 
 	/**
@@ -169,9 +163,9 @@ final class HandleData {
 	 */
 
 	public static function ipAddress(string $ip) : string {
-		$validatedIp = filter_var($ip, FILTER_VALIDATE_IP);
-		if ($validatedIp) {
-			return $validatedIp;
+		$validated_ip = filter_var($ip, FILTER_VALIDATE_IP);
+		if ($validated_ip) {
+			return $validated_ip;
 		} else {
 			throw new HandleDataException('Not a valid ip address');
 		}
