@@ -44,7 +44,7 @@ Pretty much, unless you're in the 5% of PHP developers in the world, Shine PHP w
 ShinePHP is available on Packagist (using semantic versioning), and installation via Composer is the recommended way to install ShinePHP. Just add this line to your composer.json file:
 
 ```json
-"adammcgurk/shine-php": "^0.0.3"
+"adammcgurk/shine-php": "^1.0.0"
 ```
 
 or run:
@@ -62,7 +62,7 @@ Here is how you include the library:
 declare(strict_types=1);
 
 require_once 'path/to/vendor/autoload.php';
-use ShinePHP\{Crud, CrudException, HandleData, HandleDataException, EasyHttp, EasyHttpException};
+use ShinePHP\{Crud, CrudException, HandleData, EasyHttp};
 
 // Put the rest of your code here
 
@@ -73,116 +73,3 @@ use ShinePHP\{Crud, CrudException, HandleData, HandleDataException, EasyHttp, Ea
 ## Crud
 
 ### Method Signatures and examples
-
-#### readFromDatabase(string $statement, array $values = []) : array
-
-The readFromDatabase class method is used for SELECT SQL statement execution. You supply a SQL statement in the first parameter (with placeholders in the form of a question mark '?' representing your input data), your inputs in the second paramter (empty by default), and you receive a multi-dimensional array back.
-
-##### readFromDatabase() Example 1:
-
-Databse Schema:
-```sql
-CREATE TABLE table (id int(3), name varchar(100));
-
-INSERT INTO table VALUES (123,'Adam McGurk');
-INSERT INTO table VALUES (321,'Joe Bob');
-INSERT INTO table VALUES (231,'Jane Doe');
-```
-
-PHP Code:
-```php
-$id = 123;
-$sql = 'SELECT name FROM table WHERE id = ?';
-try {
-	$Crud = new Crud();
-	$response = $Crud->readFromDatabase($sql,[$id]);
-} catch (CrudException $cex) {
-	echo "Uh oh! There's a problem! Crud probably doesn't have the right MySQL user details, but let's check the error message here: ".$cex->getMessage();
-} catch (PDOException $pex) {
-	echo "Uh oh! There's actually a problem with the SQL itself most likely, but let's check the error message: ".$pex->getMessage();
-}
-var_dump($response);
-```
-
-Outputs:
-```php
-array(1) {
-  [0]=>
-  array(1) {
-    ["name"]=>
-    string(11) "Adam McGurk"
-  }
-}
-```
-
-You access the name like this:
-```php
-$response[0]['name'];
-```
-
-Which represents:
-```php
-"Adam McGurk"
-```
-
-
-#### makeChangeToDatabase(string $statement, array $values = [], int $rowsAffected = 0) : void
-
-The makeChangeToDatabase class method is used for INSERT, UPDATE, or DELETE SQL statement execution. You supply a SQL statement in the first parameter (with placeholders in the form of a question mark '?' representing your input data), your inputs in the second paramter (empty by default), and you can optionally supply an integer representing the number of rows you expect to be affected. If this is zero, the feature is turned off. This is the default.
-
-##### makeChangeToDatabase() example #1:
-
-Databse Schema:
-```sql
-CREATE TABLE table (id int(3), name varchar(100));
-
-INSERT INTO table VALUES (123,'Adam McGurk');
-INSERT INTO table VALUES (321,'Joe Bob');
-INSERT INTO table VALUES (231,'Jane Doe');
-```
-
-PHP Code:
-```php
-$id = 123;
-$sql = 'DELETE FROM table WHERE id = ?';
-try {
-	$Crud = new Crud();
-	$response = $Crud->makeChangeToDatabase($sql,[$id]);
-} catch (CrudException $cex) {
-	echo "Uh oh! There's a problem! Crud probably doesn't have the right MySQL user details, or an incorrect number of rows were affected, but let's check the error message here: ".$cex->getMessage();
-} catch (PDOException $pex) {
-	echo "Uh oh! There's actually a problem with the SQL itself most likely, but let's check the error message: ".$pex->getMessage();
-}
-```
-
-Which deletes the record with an ID matching 123.
-
-##### makeChangeToDatabase() example #2 (showing the rowsAffected feature):
-
-Databse Schema:
-```sql
-CREATE TABLE table (id int(3), name varchar(100));
-
-INSERT INTO table VALUES (123,'Adam McGurk');
-INSERT INTO table VALUES (321,'Joe Bob');
-INSERT INTO table VALUES (231,'Jane Doe');
-```
-
-PHP Code:
-```php
-$id = 39023812983;
-$sql = 'DELETE FROM table WHERE id = ?';
-try {
-	$Crud = new Crud();
-	$response = $Crud->makeChangeToDatabase($sql,[$id], 1);
-} catch (CrudException $cex) {
-	echo "Uh oh! There's a problem! Crud probably doesn't have the right MySQL user details, or an incorrect number of rows were affected, but let's check the error message here: ".$cex->getMessage();
-} catch (PDOException $pex) {
-	echo "Uh oh! There's actually a problem with the SQL itself most likely, but let's check the error message: ".$pex->getMessage();
-}
-```
-
-Outputs:
-```
-Uh oh! There's a problem! Crud probably doesn't have the right MySQL user details, or an incorrect number of rows were affected, but let's check the error message here: Incorrect number of rows affected. The expected number of rows to be affected is 1 and 0 were affected.
-```
