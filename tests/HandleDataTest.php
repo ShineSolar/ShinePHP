@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
 require 'src/ShinePHP/HandleData.php';
-use ShinePHP\{HandleData, HandleDataException};
+use ShinePHP\{HandleData};
 
 final class HandleDataTest extends TestCase {
 
@@ -159,18 +159,16 @@ final class HandleDataTest extends TestCase {
     // Testing invalid ip address (regular 4 octect numerals)
     public function testInvalidIpAddress() : void { $this->assertFalse(HandleData::ip('256.101.7.10')); }
 
-/*
-
     // Testing invalid float passing 0
-    public function testInvalidFloatPassingZero() : void { $this->assertFalse(HandleDataException::class); HandleData::float(0); }
+    public function testInvalidFloatPassingZero() : void { $this->assertFalse(HandleData::float(0)); }
 
     // Testing invalid float passing a string
-    public function testInvalidFloatPassingString() : void { $this->assertFalse(HandleDataException::class); HandleData::float('not a valid float'); }
+    public function testInvalidFloatPassingString() : void { $this->assertFalse(HandleData::float('not a valid float')); }
 
     // Testing invalid integer passing 0
-    public function testInvalidIntegerPassingZero() : void { $this->assertFalse(HandleDataException::class); HandleData::integer(0); }
+    public function testInvalidIntegerPassingZero() : void { $this->assertFalse(HandleData::integer(0)); }
 
     // Testing invalid integer passing a string
-    public function testInvalidIntegerPassingString() : void { $this->assertFalse(HandleDataException::class); HandleData::integer('not a valid integer'); }*/
+    public function testInvalidIntegerPassingString() : void { $this->assertFalse(HandleData::integer('not a valid integer')); }
 
 }

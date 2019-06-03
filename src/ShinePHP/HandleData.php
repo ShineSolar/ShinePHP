@@ -172,11 +172,11 @@ final class HandleData {
 	 * @param mixed $number variable you want validated as a float
 	 * @param OPTIONAL bool $can_be_zero if set to true, the return can be 0.00
 	 * 
-	 * @return float
+	 * @return float on success, if not valid float, return false
 	 *
 	 */
 
-	public static function float($number, bool $can_be_zero = false) : float {
+	public static function float($number, bool $can_be_zero = false) {
 
 		// sanitizing and validating the input as a float
 		$sanitized_number = filter_var($number, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
@@ -202,38 +202,27 @@ final class HandleData {
 	 * @access public
 	 *
 	 * @param mixed $number variable you want validated as an integer
-	 * @param OPTIONAL bool $canBeZero if set to true, the return can be 0
-	 *
-	 * @throws ArgumentCountError when there are no parameters passed
-	 * @throws HandleDataException if $number cannot be validated as integer
-	 * @throws InvalidArgumentException when the parameter is passed with the incorrect type
+	 * @param OPTIONAL bool $can_be_zero if set to true, the return can be 0
 	 * 
-	 * @return int
+	 * @return int on success, if not valid int, return false
 	 *
 	 */
 
-	public static function integer($number, bool $canBeZero = false) : int {
+	public static function integer($number, bool $can_be_zero = false) {
 
 		// sanitizing and validating the input as an integer
-		$sanitizedNumber = filter_var($number, FILTER_SANITIZE_NUMBER_INT);
-		$validatedInt = filter_var($sanitizedNumber, FILTER_VALIDATE_INT);
+		$sanitized_number = filter_var($number, FILTER_SANITIZE_NUMBER_INT);
+		$validated_int = filter_var($sanitized_number, FILTER_VALIDATE_INT);
 
 		// Doing the integer checks and throwing exceptions or returning the valid integer
-		if ($validatedInt === false) {
-			throw new HandleDataException('Not a vaild integer');
-		} else if (!$canBeZero && $validatedInt === 0) {
-			throw new HandleDataException('Integer cannot be 0. The return number is: '.$validatedInt);
+		if ($validated_int === false) {
+			return false;
+		} else if (!$can_be_zero && $validated_int === 0) {
+			return false;
 		} else {
-			return $validatedInt;
+			return $validated_int;
 		}
 
 	}
 
-	public static function prepareSingularForOutputValidation(string $varToPrepare) : string {
-		return htmlspecialchars($varToPrepare);
-	}
-
 }
-
-// Custom Exception class. We don't need any more functionality other than the built in Exception class
-final class HandleDataException extends \Exception {}
