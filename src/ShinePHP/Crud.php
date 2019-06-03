@@ -24,10 +24,10 @@ namespace ShinePHP;
 final class Crud {
 
 	/** 
-	 *  @access protected
+	 *  @access private
 	 *	@var object This is the actual database connection object returned by pdo. Used in all four CRUD public functions 
 	 */
-	protected $pdo;
+	private $pdo;
 
 	/**
 	 *
@@ -43,8 +43,8 @@ final class Crud {
 
 	public function __construct(bool $developmentMode = false) {
 		$server = '127.0.0.1'; // This one might not change
-		$dbname = 'your_database_name'; // Change this to the name of the database you are working with
-		if ($dbname === 'your_database_name' && $developmentMode === false) {
+		$dbname = 'crud_test'; // Change this to the name of the database you are working with
+		if ($dbname === 'crud_test' && $developmentMode === false) {
 			throw new CrudException('Database details not changed! Please go into the class file and change the login details to match your specific DB.');
 		}
 		$dsn = 'mysql:host='.$server.';dbname='.$dbname; // Right now we only support mysql/mariadb
@@ -55,8 +55,7 @@ final class Crud {
 	        $pdo = new \PDO($dsn, $username, $password, $options);
 	        $this->pdo = $pdo;
 	    } catch(\PDOException $ex) {
-	    	echo 'Trying to link to your database failed. This is usually because you have a wrong username or password on your mysql client. Here is the error message so you can do more digging! '.$ex;
-	        exit;
+	    	throw new CrudException('Trying to link to your database failed. This is usually because you have a wrong username or password on your mysql client. Here is the error message so you can do more digging! '.$ex);
 	    }
 	}
 
@@ -80,30 +79,32 @@ final class Crud {
 	 *
 	 */
 
-	public function makeChangeToDatabase(string $statement, array $values = [], int $rowsAffected = 0) : void {
+	public function change(string $statement, array $values = []) : array {
 
 		// Checking if placeholder values exist, if not, a simple query will suffice
 		if (empty($values) && !strpos($statement, '?')) {
 
 			// Running the statement and getting the row count
 			$stmt = $this->pdo->query($statement);
-			$rowCount = $stmt->rowCount();
 
-			// Confirming row count integrity
-			if ($rowsAffected !== 0 && $rowsAffected !== $rowCount) {
-				throw new CrudException('Incorrect number of rows affected. The expected number of rows to be affected is '.$rowsAffected.' and '.$rowCount.' were affected.');
-			}
+			// returning the most recent id inserted and getting the amount of rows affected
+			return [
+				'last_insert_id' => $this->pdo->lastInsertId(),
+				'row_count' => $stmt->rowCount()
+			];
+
 		} else {
 
 			// Running the statement and getting the row count
 			$stmt = $this->pdo->prepare($statement);
 			$stmt->execute($values);
-			$rowCount = $stmt->rowCount();
 
-			// Confirming row count integrity
-			if ($rowsAffected !== 0 && $rowsAffected !== $rowCount) {
-				throw new CrudException('Incorrect number of rows affected. The expected number of rows to be affected is '.$rowsAffected.' and '.$rowCount.' were affected.');
-			}
+			// returning the most recent id inserted and getting the amount of rows affected
+			return [
+				'last_insert_id' => $this->pdo->lastInsertId(),
+				'row_count' => $stmt->rowCount()
+			];
+
 		}
 
 	}
@@ -124,7 +125,7 @@ final class Crud {
 	 *
 	 */
 
-	public function readFromDatabase(string $statement, array $values = []) : array {
+	public function read(string $statement, array $values = []) : array {
 
 		// Checking if placeholder values exist, if not, a simple query will suffice
 		if (empty($values) && !strpos($statement, '?')) {
@@ -159,7 +160,7 @@ final class Crud {
 	 *
 	 */
 
-	public static function sanitizeMysql(string $name, array $whiteList = []) : string {
+	public static function sanitize_mysql(string $name, array $whiteList = []) : string {
 		if (!empty($whiteList) && array_search($name, $whiteList) === false) {
 			throw new CrudException('Value does not exist in value whitelist.');
 		} else if (!empty($whiteList) && array_search($name, $whiteList) !== false) {

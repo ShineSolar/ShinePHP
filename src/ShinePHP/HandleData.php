@@ -73,7 +73,7 @@ final class HandleData {
 	 *
 	 */
 
-	public static function phone(string $phone) : string {
+	public static function us_phone(string $phone) : string {
 		$strippedPhone = preg_replace('/[^0-9]/', '', self::string($phone, false));
 		if (preg_match('/^1?[2-9]{1}[0-9]{2}[0-9]{3}[0-9]{4}$/', $strippedPhone) !== 1) {
 			throw new HandleDataException('Invalid phone number');
