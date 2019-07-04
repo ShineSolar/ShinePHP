@@ -63,13 +63,13 @@ final class HandleData {
 	 * @access public
 	 *
 	 * @param string $phone string you want validated as a phone number
-	 * @param OPTIONAL bool $include_country_code decide if you want a leading one in it or not
+	 * @param OPTIONAL bool $include_us_country_code decide if you want a leading one in it or not
 	 * 
 	 * @return mixed validated phone or false on failure
 	 *
 	 */
 
-	public static function american_phone(string $phone, bool $include_country_code = false) {
+	public static function american_phone(string $phone, bool $include_us_country_code = false) {
 
 		$stripped_phone = preg_replace('/[^0-9]/', '', self::string($phone, false));
 
@@ -82,7 +82,7 @@ final class HandleData {
 		} else {
 
 			// checking the country code flag
-			if ($include_country_code) { return (substr($stripped_phone,0,1) === '1' ? $stripped_phone : '1'.$stripped_phone); } 
+			if ($include_us_country_code) { return (substr($stripped_phone,0,1) === '1' ? $stripped_phone : '1'.$stripped_phone); } 
 			else { return (substr($stripped_phone,0,1) === '1' ? substr($stripped_phone,1) : $stripped_phone); }
 
 		}
