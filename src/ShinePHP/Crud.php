@@ -151,13 +151,16 @@ final class Crud {
 	 */
 
 	public static function sanitize_mysql(string $name, array $whiteList = []) : string {
-		if (!empty($whiteList) && array_search($name, $whiteList) === false) {
-			throw new CrudException('Value does not exist in value whitelist.');
-		} else if (!empty($whiteList) && array_search($name, $whiteList) !== false) {
-			return $name;
-		} else {
-			return '`'.str_replace('`','``',$name).'`';
-		}
+
+		// Checking the name whitelist, throwing exception if name is not in whitelist
+		if (!empty($whiteList) && array_search($name, $whiteList) === false) { throw new CrudException('Value does not exist in value whitelist.'); } 
+
+		// returning the name if it passes the whitelist
+		else if (!empty($whiteList) && array_search($name, $whiteList) !== false) { return $name; } 
+
+		// sanitizes a name for use in the database
+		else { return '`'.str_replace('`','``',$name).'`'; }
+
 	}
 
 }
