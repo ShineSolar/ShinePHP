@@ -55,7 +55,7 @@ final class HttpRequest {
 
 	} 
 
-	public function get(string $stringified_data = '', array $query_params = []) {
+	public function get(array $query_params = []) {
 
 		// setting URL
 		if (!empty($query_params)) {

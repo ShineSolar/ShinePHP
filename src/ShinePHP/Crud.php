@@ -11,10 +11,9 @@ namespace ShinePHP;
  * 
  * EXAMPLE USAGE:
  * $pdo = new Crud();
- * $dbReturn = $pdo->readFromDatabase('SELECT * FROM users WHERE id = ?', [1]);
+ * $db_return = $pdo->read('SELECT * FROM users WHERE id = ?', [1]);
  * $user = $dbReturn[0];
  *
- * @package CRUD
  * @author Adam McGurk <amcgurk@shinesolar.com>
  * @access public
  * @see https://github.com/ShineSolar/ShinePHP
@@ -33,18 +32,18 @@ final class Crud {
 	 *
 	 * @access public 
 	 * Opens the initial database connection. 
-	 * THIS SHOULD ONLY BE INITAILIZED ONCE PER SCRIPT!!! You will have perf issues otherwise
+	 * THIS SHOULD ONLY BE INITAILIZED ONCE PER SCRIPT!!! You will have performance issues otherwise
 	 *
-	 * @param OPTIONAL bool $developmentMode Pass true to this when you're developing the actual class in ANY OTHER CIRCUMSTANCE leave blank
+	 * @param OPTIONAL bool $development_mode Pass true to this when you're developing the actual class in ANY OTHER CIRCUMSTANCE leave blank
 	 * 
-	 * @throws CrudException when the database login details ($dbname, $username, $password, etc...) remain the same as the defaults
+	 * @throws CrudException when the database login details ($dbname, $username, $password, etc...) remain the same as the defaults OR there was a database failure to login
 	 *
 	 */
 
-	public function __construct(bool $developmentMode = false) {
+	public function __construct(bool $development_mode = false) {
 		$server = '127.0.0.1'; // This one might not change
 		$dbname = 'crud_test'; // Change this to the name of the database you are working with
-		if ($dbname === 'crud_test' && $developmentMode === false) {
+		if ($dbname === 'crud_test' && $development_mode === false) {
 			throw new CrudException('Database details not changed! Please go into the class file and change the login details to match your specific DB.');
 		}
 		$dsn = 'mysql:host='.$server.';dbname='.$dbname; // Right now we only support mysql/mariadb
@@ -66,16 +65,11 @@ final class Crud {
 	 * @access public
 	 *
 	 * @param string $statement the correctly formed SQL statement
-	 * @param array $values the values to replace the SQL placeholders
-	 * @param OPTIONAL string $table if you need to sanitize a dynamic table, pass a table.
-	 * @param OPTIONAL array $tableWhiteList if you want a whitelist to validate the dynamic table name THIS IS THE MOST SECURE OPTION.
-	 * @param OPTIONAL int $rowsReturned if you know how many rows your statement INSERT, UPDATE, or DELETE is supposed to affect, pass an integer with that number
-	 *
-	 * @throws CrudException when number of rows returned does not equal the rowCount of the statement result
-	 * @throws PDOException when statement is incorrectly formed OR statement is rejected by the database
-	 * @throws InvalidArgumentException when any of the parameters are passed with the incorrect type
+	 * @param OPTIONAL array $values the values to replace the SQL placeholders
 	 * 
-	 * @return void
+	 * @return array 
+	 *	string|null last_insert_id - Contains the ID of the last inserted row. If no row was inserted, it's null
+	 *  int row_count - The number of rows affected by the query
 	 *
 	 */
 
@@ -87,25 +81,19 @@ final class Crud {
 			// Running the statement and getting the row count
 			$stmt = $this->pdo->query($statement);
 
-			// returning the most recent id inserted and getting the amount of rows affected
-			return [
-				'last_insert_id' => $this->pdo->lastInsertId(),
-				'row_count' => $stmt->rowCount()
-			];
-
 		} else {
 
 			// Running the statement and getting the row count
 			$stmt = $this->pdo->prepare($statement);
 			$stmt->execute($values);
 
-			// returning the most recent id inserted and getting the amount of rows affected
-			return [
-				'last_insert_id' => $this->pdo->lastInsertId(),
-				'row_count' => $stmt->rowCount()
-			];
-
 		}
+
+		// returning the most recent id inserted and getting the amount of rows affected
+		return array(
+			'last_insert_id' => $this->pdo->lastInsertId(),
+			'row_count' => $stmt->rowCount()
+		);
 
 	}
 
@@ -116,12 +104,14 @@ final class Crud {
 	 * @access public
 	 *
 	 * @param string $statement the correctly formed SQL statement
-	 * @param array $values the values to replace the SQL placeholders
-	 *
-	 * @throws PDOException when statement is incorrectly formed OR statement is rejected by the database
-	 * @throws InvalidArgumentException when any of the parameters are passed with the incorrect type
+	 * @param OPTIONAL array $values the values to replace the SQL placeholders
 	 * 
-	 * @return array
+	 * @return array of rows.
+	 *
+	 * If nothing is fetched from the SQL statement, an empty array is returned
+	 * Will always be a multi dimensional array, so even if you wrote a SELECT * FROM ... LIMIT 1, you must still access it like this:
+	 * $my_return = $Crud->read('SELECT * FROM table LIMIT 1');
+	 * var_dump($my_return[0]);
 	 *
 	 */
 
@@ -132,21 +122,22 @@ final class Crud {
 
 			// Running the statement and returning the return (no throwing exception on empty return)
 			$stmt = $this->pdo->query($statement);
-			return $stmt->fetchAll();
 
 		} else {
 
 			// Running the statement and returning the return (no throwing exception on empty return)
 			$stmt = $this->pdo->prepare($statement);
 			$stmt->execute($values);
-			return $stmt->fetchAll();
+
 		}
+
+		return $stmt->fetchAll();
 
 	}
 
 	/**
 	 *
-	 * Sanitizes a dynamic table name
+	 * Sanitizes a dynamic table or column name
 	 *
 	 * @access public
 	 *
@@ -154,9 +145,8 @@ final class Crud {
 	 * @param OPTIONAL array $whiteList if you want a whitelist to validate the dynamic name THIS IS THE MOST SECURE OPTION.
 	 *
 	 * @throws CrudException when name does not exist in whitelist
-	 * @throws InvalidArgumentException when any of the parameters are passed with the incorrect type
 	 * 
-	 * @return string
+	 * @return string of the sanitized name
 	 *
 	 */
 

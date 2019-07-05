@@ -10,7 +10,7 @@ This is a very simple PHP library that allows developers to SHINE!
 - Method to sanitize table or column names (MySQL/MariaDB only right now, more RDBMS' on the way soon!!!), which PDO does not do
 - Ability to easily sanitize and validate phone numbers, email addresses, ip addresses, urls, strings, floats, integers, and booleans
 - Secure by default HTTP methods, and several other methods for HTTP request validation
-- Strictly Typed
+- Strongly typed methods
 - Protects against SQL injection automatically
 - Namespaced to prevent name clashes
 - And more!
@@ -26,7 +26,7 @@ If you need a secure way of requesting HTTP endpoints, our EasyHttp class uses t
 ## What is Shine PHP not?
 Shine PHP is not a feature-rich framework, it's not meant to be and we have no immediate intention of turning it into a framework. It's a library that is designed to make database transactions, handling data, and HTTP requesting easy. 
 
-Shine PHP never intends to be backwards compatible with anything below PHP 7. The whole idea of this framework is to force secure PHP programming. 
+Shine PHP never intends to be backwards compatible with anything below PHP 7. The whole idea of this framework is to force secure and safe PHP programming. 
 
 And finally, Shine PHP is not meant to be used for developers with very specific needs. If you're starting up just a small blog or a simple web application, Shine PHP will probably be exactly what you need and want. However, if you have very specific database needs in particular, Shine PHP is not for you. Or if you're in a country other than the United States, the methods in HandleData don't work with non-United States phone numbers.
 

@@ -6,13 +6,7 @@ namespace ShinePHP;
 /**
  * HandleData is a class to make a cleaner, simpler interface for working input data
  * HandleData is an interface built for PHP developers to reduce all of the code repeating in sanitizing and validating data
- * 
- * EXAMPLE USAGE:
- * $DataInput = new HandleData($_POST);
- * $email = $DataInput->email($DataInput['email']);
- * echo HandleData::output($email);
  *
- * @package HandleData
  * @author Adam McGurk <amcgurk@shinesolar.com>
  * @access public
  * @see https://github.com/ShineSolar/ShinePHP
