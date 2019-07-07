@@ -1,5 +1,6 @@
 .*
 ~*
+db_details.php
 vendor/
 *.sublime-project
 *.sublime-workspace
