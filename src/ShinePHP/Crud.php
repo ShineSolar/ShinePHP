@@ -36,19 +36,24 @@ final class Crud {
 	 *
 	 * @param OPTIONAL bool $development_mode Pass true to this when you're developing the actual class in ANY OTHER CIRCUMSTANCE leave blank
 	 * 
-	 * @throws CrudException when the database login details ($dbname, $username, $password, etc...) remain the same as the defaults OR there was a database failure to login
+	 * @throws CrudException when the database login details ($dbname, $username, $password, etc...) have not been predefined OR there was a database failure to login
 	 *
 	 */
 
-	public function __construct(bool $development_mode = false) {
-		$server = '127.0.0.1'; // This one might not change
-		$dbname = 'crud_test'; // Change this to the name of the database you are working with
-		if ($dbname === 'crud_test' && $development_mode === false) {
-			throw new CrudException('Database details not changed! Please go into the class file and change the login details to match your specific DB.');
+	public function __construct() {
+
+		// you can define your own server address or domain. The default is the localhost ip address
+		$server = (defined('DB_SERVER') ? DB_SERVER : '127.0.0.1');
+
+		// Making sure the default database details are defined
+		if (defined('DB_NAME') === false || defined('DB_USERNAME') === false || defined('DB_PASSWORD') === false) {
+			throw new CrudException('Please define your database details. See the README here: https://github.com/ShineSolar/ShinePHP/blob/master/README.md to learn how to define the details');
 		}
+
+		$dbname = DB_NAME;
 		$dsn = 'mysql:host='.$server.';dbname='.$dbname; // Right now we only support mysql/mariadb
-		$username = 'your_mysql_client'; // Change this to the name of your mysql user
-		$password = 'your_mysql_password'; // Change this to the password of your mysql user
+		$username = DB_USERNAME;
+		$password = DB_PASSWORD;
 		$options = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC);
 	    try {
 	        $pdo = new \PDO($dsn, $username, $password, $options);

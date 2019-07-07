@@ -4,6 +4,7 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
+require 'tests/db_details.php';
 require 'src/ShinePHP/Crud.php';
 use ShinePHP\{Crud, CrudException};
 
@@ -13,20 +14,14 @@ final class CrudTest extends TestCase {
 	public function testCanBeCreatedWithDatabaseCredentials() : void {
         $this->assertInstanceOf(
             Crud::class,
-            new Crud(true)
+            new Crud()
         );
-    }
-
-    // Testing an invalid class init
-    public function testCannotBeCreatedWithDefaultDatabaseCredentials() : void {
-    	$this->expectException(CrudException::class);
-    	new Crud();
     }
 
     // Testing valid INSERT/UPDATE/DELETE statements 
     public function testValidChange() : void {
 
-    	$db_connect = new Crud(true);
+    	$db_connect = new Crud();
 
     	// Testing INSERT/UPDATE/DELETE statement with no placeholder values or rowCount
     	$this->assertArrayHasKey('row_count', $db_connect->change('INSERT INTO table_1 VALUES (11, "Stephaine Laub")', []));
@@ -48,7 +43,7 @@ final class CrudTest extends TestCase {
     // Testing invalid INSERT/UPDATE/DELETE statement no bound parameters, but placeholders passed
     public function testInvalidChangeNoParametersBound() : void {
 
-    	$db_connect = new Crud(true);
+    	$db_connect = new Crud();
 
     	// Testing INSERT statement with no placeholder values, but there are question marks (aka 'placeholders')
     	// Only testing the INSERT statement, because it will be the exact same for UPDATE and DELETE
@@ -60,7 +55,7 @@ final class CrudTest extends TestCase {
     // Testing valid INSERT/UPDATE/DELETE statements 
     public function testValidRead() : void {
 
-    	$db_connect = new Crud(true);
+    	$db_connect = new Crud();
 
     	// Running a select statement on one row with no placeholders
     	$table1FirstName = $db_connect->read('SELECT name FROM table_1 WHERE id=1', []);
@@ -93,7 +88,7 @@ final class CrudTest extends TestCase {
     // Testing invalid SELECT statement no bound parameters, but placeholders passed
     public function testInvalidReadNoParametersBound() : void {
 
-    	$db_connect = new Crud(true);
+    	$db_connect = new Crud();
 
     	// Testing SELECT statement with no placeholder values, but there are question marks (aka 'placeholders')
     	$this->expectException(PDOException::class);
