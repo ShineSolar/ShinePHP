@@ -33,8 +33,6 @@ final class Crud {
 	 * @access public 
 	 * Opens the initial database connection. 
 	 * THIS SHOULD ONLY BE INITAILIZED ONCE PER SCRIPT!!! You will have performance issues otherwise
-	 *
-	 * @param OPTIONAL bool $development_mode Pass true to this when you're developing the actual class in ANY OTHER CIRCUMSTANCE leave blank
 	 * 
 	 * @throws CrudException when the database login details ($dbname, $username, $password, etc...) have not been predefined OR there was a database failure to login
 	 *
