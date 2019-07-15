@@ -5,9 +5,23 @@ use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
 require 'src/ShinePHP/HandleData.php';
-use ShinePHP\{HandleData, IpValidator};
+use ShinePHP\{HandleData, IpValidator, EmailValidator};
 
 final class HandleDataTest extends TestCase {
+
+    public function testInvalidEmailAddresses(): void {
+        $EmailValidator = new EmailValidator('not an email');
+        $this->assertFalse($EmailValidator->validate_email());
+        $DomainValidator = new EmailValidator('amcgurk@shinesolar.com');
+        $this->assertFalse($DomainValidator->validate_email_domain('gmail.com'));
+    }
+
+    public function testValidEmailAddresses(): void {
+        $EmailValidator = new EmailValidator('amcgurk@shinesolar.com');
+        $this->assertEquals($EmailValidator->validate_email(), 'amcgurk@shinesolar.com');
+        $DomainValidator = new EmailValidator('amcgurk@shinesolar.com');
+        $this->assertEquals($DomainValidator->validate_email_domain('shinesolar.com'), 'amcgurk@shinesolar.com');
+    }
 
     public function testValidIpAddresses(): void {
 
@@ -19,7 +33,7 @@ final class HandleDataTest extends TestCase {
         $this->assertEquals('FC80:0000:0000:0000:903A:1C1A:E802:11E4', $priv_addy->validate_private_ipv6());
     }
 
-    public function testInvalidIpAddresses(): void {
+/*    public function testInvalidIpAddresses(): void {
         $reg_invalid = new IpValidator('256.71.83.1');
         $this->assertFalse($reg_invalid->validate_general_ip());
 
@@ -40,7 +54,7 @@ final class HandleDataTest extends TestCase {
 
         $invalid_subnet = new IpValidator('192.168.0.1');
         $this->assertFalse($invalid_subnet->validate_subnet_mask());
-    }
+    }*/
 
     public function testingValidData() : void {
 
