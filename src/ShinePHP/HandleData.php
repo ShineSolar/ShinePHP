@@ -17,41 +17,6 @@ final class HandleData {
 
 	/**
 	 *
-	 * Makes it easy to validate an email address AND gives you control over the domain if you want
-	 *
-	 * @access public
-	 *
-	 * @param string $email this is the string you want validated as an email address
-	 * @param OPTIONAL string $optional_domain only pass a paramter to this if you only want email addresses belonging to certain domains to be validated
-	 * 
-	 * @return mixed valid email address or false on failure
-	 *
-	 */
-
-	public static function email(string $email, string $optional_domain = '') {
-
-		// setting the original variables
-		$sanitized_email = filter_var($email, FILTER_SANITIZE_EMAIL);
-		$domain = substr($sanitized_email, strpos($sanitized_email, "@") + 1);
-
-		// Checking if it is actually a valid email after the sanitization
-		if (filter_var($sanitized_email, FILTER_VALIDATE_EMAIL) !== false) {
-
-			// doing the domain check
-			if ($optional_domain !== '' && $domain !== $optional_domain) {
-				return false;
-			} else {
-				return $sanitized_email;
-			}
-
-		} else {
-			return false;
-		}
-
-	}
-
-	/**
-	 *
 	 * Sanitize and validate a United States Phone Number, optionally including the "1" area code
 	 *
 	 * @access public
@@ -145,20 +110,6 @@ final class HandleData {
 
 	/**
 	 *
-	 * Validate and return an ip address
-	 *
-	 * @access public
-	 *
-	 * @param string $ip variable you want validated as an ip address
-	 * 
-	 * @return string of the ip address on success or false on failure
-	 *
-	 */
-
-	public static function ip(string $ip) { return filter_var($ip, FILTER_VALIDATE_IP); }
-
-	/**
-	 *
 	 * Validate and return a float value
 	 *
 	 * @access public
@@ -221,6 +172,62 @@ final class HandleData {
 
 }
 
+final class PrimitiveDataValidator {
+
+	private $primitive_data;
+
+	public function __construct($primitive_data) {
+		$this->primitive_data = $primitive_data;
+	}
+
+	public function validate_string(bool $can_be_empty = false) {
+
+		// sanitizing the actual string
+		$sanitized_string = filter_var($this->primitive_data, FILTER_SANITIZE_STRING);
+
+		// running the check
+		return ($can_be_empty === false && $sanitized_string === '' ? false : $sanitized_string);
+
+	}
+
+	public function validate_int(bool $can_be_zero = false) {
+
+		// sanitizing and validating the input as an integer
+		$sanitized_number = filter_var($this->primitive_data, FILTER_SANITIZE_NUMBER_INT);
+		$validated_int = filter_var($sanitized_number, FILTER_VALIDATE_INT);
+
+		// Doing the integer checks and throwing exceptions or returning the valid integer
+		if ($validated_int === false) {
+			return false;
+		} else if (!$can_be_zero && $validated_int === 0) {
+			return false;
+		} else {
+			return $validated_int;
+		}
+
+	}
+
+	public function validate_float(bool $can_be_zero = false) {
+
+		// sanitizing and validating the input as a float
+		$sanitized_number = filter_var($this->primitive_data, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+		$validated_float = filter_var($sanitized_number, FILTER_VALIDATE_FLOAT, FILTER_FLAG_ALLOW_THOUSAND);
+
+		// Doing the float checks and throwing exceptions or returning the valid float
+		if ($validated_float === false) {
+			return false;
+		} else if (!$can_be_zero && $validated_float === 0.00) {
+			return false;
+		} else {
+			return $validated_float;
+		}
+
+	}
+
+	public function validate_boolean(): bool { return filter_var($this->primitive_data, FILTER_VALIDATE_BOOLEAN); }
+
+}
+
 final class EmailValidator {
 
 	private $validated_email;
@@ -228,7 +235,7 @@ final class EmailValidator {
 
 	public function __construct(string $raw_email) {
 
-		// setting the original variables
+		// setting the original variable
 		$sanitized_email = filter_var($raw_email, FILTER_SANITIZE_EMAIL);
 		$this->validated_email = filter_var($sanitized_email, FILTER_VALIDATE_EMAIL);
 
@@ -239,15 +246,49 @@ final class EmailValidator {
 
 	}
 
-	public function validate_email() {
-		return $this->validated_email;
-	}
+	public function validate_email() { return $this->validated_email; }
 
 	public function validate_email_domain(string $domain) {
 
 		if (!$this->validated_email) return false;
 
 		return ($domain === $this->email_domain ? $this->validated_email : false);
+
+	}
+
+}
+
+final class UrlValidator {
+
+	private $domain;
+	private $protocol;
+	private $validated_url;
+
+	public function __construct(string $raw_url) {
+		$sanitized_url = filter_var($raw_url, FILTER_SANITIZE_URL);
+		$this->validated_url = filter_var($sanitized_url, FILTER_VALIDATE_URL);
+		$this->domain = '';//;
+	}
+
+	public function validate_url() { return $this->validated_url; }
+
+	public function validate_domain(string $domain) {
+
+		// not a valid url, so just stop
+		if (!$this->validated_url) return false;
+
+		// doing the domain check
+		return ($this->domain === $domain ? $this->validated_url : false);
+
+	}
+
+	public function validate_protocol(string $protocol) {
+
+		// not a valid url, so just stop
+		if (!$this->validated_url) return false;
+
+		// doing the domain check
+		return ($this->protocol === $protocol ? $this->validated_url : false);
 
 	}
 
@@ -295,7 +336,7 @@ final class IpValidator {
 	public function validate_subnet_mask() {
 
 		// running it against the validation regex, we can do better
-		$validated_subnet = preg_match('^(((255\.){3})|((255\.){2}(255|254|252|248|240|224|192|128|0+)\.0)|((255\.)(255|254|252|248|240|224|192|128|0+)(\.0+){2})|((255|254|252|248|240|224|192|128|0+)(\.0+){3}))$', $this->raw_address);
+		$validated_subnet = preg_match('/^(((255\.){3})|((255\.){2}(255|254|252|248|240|224|192|128|0+)\.0)|((255\.)(255|254|252|248|240|224|192|128|0+)(\.0+){2})|((255|254|252|248|240|224|192|128|0+)(\.0+){3}))$/', $this->raw_address);
 
 		return ($validated_subnet === 1 ? $this->raw_address : false);
 	}
@@ -326,5 +367,3 @@ final class IpValidator {
 	}
 
 }
-
-final class DataValidationException extends \Exception {}

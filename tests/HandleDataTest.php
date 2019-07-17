@@ -5,9 +5,14 @@ use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
 require 'src/ShinePHP/HandleData.php';
-use ShinePHP\{HandleData, IpValidator, EmailValidator};
+use ShinePHP\{HandleData, IpValidator, EmailValidator, PrimitiveDataValidator};
 
 final class HandleDataTest extends TestCase {
+
+    public function testInvalidPrimitiveTypes(): void {
+        $EmptyStringValidator = new PrimitiveDataValidator('');
+        $this->assertFalse($EmptyStringValidator->validate_string());
+    }
 
     public function testInvalidEmailAddresses(): void {
         $EmailValidator = new EmailValidator('not an email');
@@ -31,9 +36,13 @@ final class HandleDataTest extends TestCase {
         $priv_addy = new IpValidator('FC80:0000:0000:0000:903A:1C1A:E802:11E4');
 
         $this->assertEquals('FC80:0000:0000:0000:903A:1C1A:E802:11E4', $priv_addy->validate_private_ipv6());
+
+        $valid_subnet = new IpValidator('255.255.255.0');
+        $this->assertEquals('255.255.255.0', $valid_subnet->validate_subnet_mask());
+
     }
 
-/*    public function testInvalidIpAddresses(): void {
+    public function testInvalidIpAddresses(): void {
         $reg_invalid = new IpValidator('256.71.83.1');
         $this->assertFalse($reg_invalid->validate_general_ip());
 
@@ -54,21 +63,9 @@ final class HandleDataTest extends TestCase {
 
         $invalid_subnet = new IpValidator('192.168.0.1');
         $this->assertFalse($invalid_subnet->validate_subnet_mask());
-    }*/
+    }
 
     public function testingValidData() : void {
-
-    	/** 
-    	 * Email Testing
-    	 */
-
-    	// Testing regular valid email
-    	$plainEmail = HandleData::email('eldermcgurk@gmail.com');
-    	$this->assertEquals('eldermcgurk@gmail.com', $plainEmail);
-
-    	// Testing domain restricted valid email
-    	$domainToValidateEmail = HandleData::email('amcgurk@shinesolar.com', 'shinesolar.com');
-    	$this->assertEquals('amcgurk@shinesolar.com', $domainToValidateEmail);
 
         /** 
          * Phone Testing
@@ -115,26 +112,6 @@ final class HandleDataTest extends TestCase {
     	$this->assertEquals('https://shinesolar.com', $url);
 
     	/** 
-    	 * IP Address Testing
-    	 */
-
-    	// Testing public IP address	
-    	$publicIp = HandleData::ip('157.201.87.254');
-    	$this->assertEquals('157.201.87.254', $publicIp);
-
-    	// Testing private IP address
-    	$privateRange = HandleData::ip('192.168.10.110');
-    	$this->assertEquals('192.168.10.110', $privateRange);
-
-    	// Testing IPV6
-    	$ipV6 = HandleData::ip('::1');
-    	$this->assertEquals('::1', $ipV6);
-
-    	// Testing subnet masks
-    	$subnetMask = HandleData::ip('255.255.255.0');
-    	$this->assertEquals('255.255.255.0', $subnetMask);
-
-    	/** 
     	 * Float Testing
     	 */
 
@@ -175,12 +152,6 @@ final class HandleDataTest extends TestCase {
     	$this->assertEquals(0, $zero);
 
     }
-
-    // Testing invalid emails
-    public function testInvalidEmail() : void { $this->assertFalse(HandleData::email('not a valid email')); }
-
-    // Testing invalid domain to validate against an address
-    public function testInvalidDomainOnEmail() : void { $this->assertFalse(HandleData::email('amcgurk@shinesolar.com', 'gmail.com')); }
 
     // Testing invalid phone number
     public function testInvalidPhoneNumber() : void { $this->assertFalse(HandleData::american_phone('not a valid phone number')); }
