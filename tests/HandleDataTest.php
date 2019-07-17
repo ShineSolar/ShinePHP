@@ -9,43 +9,6 @@ use ShinePHP\{HandleData, IpValidator, PrimitiveDataValidator};
 
 final class HandleDataTest extends TestCase {
 
-    public function testValidIpAddresses(): void {
-
-        $reg_valid = new IpValidator('192.168.0.1');
-        $this->assertEquals('192.168.0.1', $reg_valid->validate_general_ip());
-
-        $priv_addy = new IpValidator('FC80:0000:0000:0000:903A:1C1A:E802:11E4');
-
-        $this->assertEquals('FC80:0000:0000:0000:903A:1C1A:E802:11E4', $priv_addy->validate_private_ipv6());
-
-        $valid_subnet = new IpValidator('255.255.255.0');
-        $this->assertEquals('255.255.255.0', $valid_subnet->validate_subnet_mask());
-
-    }
-
-    public function testInvalidIpAddresses(): void {
-        $reg_invalid = new IpValidator('256.71.83.1');
-        $this->assertFalse($reg_invalid->validate_general_ip());
-
-        $invalid_ipv4 = new IpValidator('FC80:0000:0000:0000:903A:1C1A:E802:11E4');
-        $this->assertFalse($invalid_ipv4->validate_general_ipv4());
-
-        $invalid_public_ipv4_reserved = new IpValidator('127.0.0.1');
-        $this->assertFalse($invalid_public_ipv4_reserved->validate_public_ipv4());
-
-        $invalid_public_ipv4_private = new IpValidator('192.168.0.1');
-        $this->assertFalse($invalid_public_ipv4_private->validate_public_ipv4());
-
-        $invalid_private_ipv4_reserved = new IpValidator('127.0.0.1');
-        $this->assertFalse($invalid_private_ipv4_reserved->validate_private_ipv4());
-
-        $invalid_private_ipv4_public = new IpValidator('207.124.51.1');
-        $this->assertFalse($invalid_private_ipv4_public->validate_private_ipv4());
-
-        $invalid_subnet = new IpValidator('192.168.0.1');
-        $this->assertFalse($invalid_subnet->validate_subnet_mask());
-    }
-
     public function testingValidData() : void {
 
         /** 
