@@ -228,36 +228,6 @@ final class PrimitiveDataValidator {
 
 }
 
-final class EmailValidator {
-
-	private $validated_email;
-	private $email_domain;
-
-	public function __construct(string $raw_email) {
-
-		// setting the original variable
-		$sanitized_email = filter_var($raw_email, FILTER_SANITIZE_EMAIL);
-		$this->validated_email = filter_var($sanitized_email, FILTER_VALIDATE_EMAIL);
-
-		// Checking if it is actually a valid email after the sanitization
-		if ($this->validated_email !== false) {
-			$this->email_domain = substr($raw_email, strpos($raw_email, "@") + 1);
-		}
-
-	}
-
-	public function validate_email() { return $this->validated_email; }
-
-	public function validate_email_domain(string $domain) {
-
-		if (!$this->validated_email) return false;
-
-		return ($domain === $this->email_domain ? $this->validated_email : false);
-
-	}
-
-}
-
 final class UrlValidator {
 
 	private $domain;

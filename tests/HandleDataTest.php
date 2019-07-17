@@ -5,7 +5,9 @@ use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
 require 'src/ShinePHP/HandleData.php';
-use ShinePHP\{HandleData, IpValidator, EmailValidator, PrimitiveDataValidator};
+require 'src/ShinePHP/Data/EmailValidator.php';
+use ShinePHP\{HandleData, IpValidator, PrimitiveDataValidator};
+use ShinePHP\Data\EmailValidator;
 
 final class HandleDataTest extends TestCase {
 
@@ -16,9 +18,11 @@ final class HandleDataTest extends TestCase {
 
     public function testInvalidEmailAddresses(): void {
         $EmailValidator = new EmailValidator('not an email');
-        $this->assertFalse($EmailValidator->validate_email());
+        $this->assertNull($EmailValidator->validate_email());
         $DomainValidator = new EmailValidator('amcgurk@shinesolar.com');
-        $this->assertFalse($DomainValidator->validate_email_domain('gmail.com'));
+        $this->assertNull($DomainValidator->validate_email_domain('gmail.com'));
+        $InvalidEmailDomainValidator = new EmailValidator('nope');
+        $this->assertNull($InvalidEmailDomainValidator->validate_email_domain('gmail.com'));
     }
 
     public function testValidEmailAddresses(): void {
