@@ -4,14 +4,14 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
-require 'tests/db_details.php';
-require 'src/ShinePHP/Crud.php';
-use ShinePHP\{Crud, CrudException};
+require 'Tests/Unit/Database/db_details.php';
+require 'src/ShinePHP/Database/Crud.php';
+use ShinePHP\Database\{Crud, CrudException};
 
 final class CrudTest extends TestCase {
 
 	// Testing a valid class init
-	public function testCanBeCreatedWithDatabaseCredentials() : void {
+	public function test_valid_create() : void {
         $this->assertInstanceOf(
             Crud::class,
             new Crud()
@@ -19,7 +19,7 @@ final class CrudTest extends TestCase {
     }
 
     // Testing valid INSERT/UPDATE/DELETE statements 
-    public function testValidChange() : void {
+    public function test_valid_changes() : void {
 
     	$db_connect = new Crud();
 
@@ -41,7 +41,7 @@ final class CrudTest extends TestCase {
     }
 
     // Testing invalid INSERT/UPDATE/DELETE statement no bound parameters, but placeholders passed
-    public function testInvalidChangeNoParametersBound() : void {
+    public function test_invalid_reads() : void {
 
     	$db_connect = new Crud();
 
@@ -86,7 +86,7 @@ final class CrudTest extends TestCase {
     }
 
     // Testing invalid SELECT statement no bound parameters, but placeholders passed
-    public function testInvalidReadNoParametersBound() : void {
+    public function test_invalid_reads_none_bound() : void {
 
     	$db_connect = new Crud();
 
@@ -97,7 +97,7 @@ final class CrudTest extends TestCase {
     }
 
     // Testing table name sanitization
-    public function testValidSanitizingTableNames() : void {
+    public function test_valid_sanitiziation() : void {
 
     	// With whitelist
     	$this->assertEquals('table_1', Crud::sanitize_mysql('table_1', ['table_1', 'table_2']));
@@ -110,7 +110,7 @@ final class CrudTest extends TestCase {
     }
 
     // Making sure non existent table names throw an exception
-    public function testInvalidSanitizingTableNames() : void {
+    public function test_invalid_sanitization() : void {
 
     	// Testing a table name that doesn't exist in the whitelist
     	$this->expectException(CrudException::class);
