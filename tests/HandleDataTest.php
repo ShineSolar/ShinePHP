@@ -9,11 +9,6 @@ use ShinePHP\{HandleData, IpValidator, PrimitiveDataValidator};
 
 final class HandleDataTest extends TestCase {
 
-    public function testInvalidPrimitiveTypes(): void {
-        $EmptyStringValidator = new PrimitiveDataValidator('');
-        $this->assertFalse($EmptyStringValidator->validate_string());
-    }
-
     public function testValidIpAddresses(): void {
 
         $reg_valid = new IpValidator('192.168.0.1');
@@ -73,62 +68,6 @@ final class HandleDataTest extends TestCase {
         $noCountryCodePhone = HandleData::american_phone('4086935992', true);
         $this->assertEquals('14086935992', $noCountryCodePhone);
 
-    	/** 
-    	 * String Testing
-    	 */
-
-    	// Testing regular old string
-    	$plainString = HandleData::string('this_is_a_string');
-    	$this->assertEquals('this_is_a_string', $plainString);
-
-    	// Testing empty string
-    	$emptyStringAllowed = HandleData::string('');
-    	$this->assertEquals('', $emptyStringAllowed);
-
-    	// Testing integer converted to string
-    	$numbersConverted = HandleData::string(123456765456765);
-    	$this->assertEquals('123456765456765', $numbersConverted);
-
-    	/** 
-    	 * Float Testing
-    	 */
-
-    	// Parsing string as float
-    	$float = HandleData::float('1.292716');
-    	$this->assertEquals(1.292716, $float);
-
-    	// Parsing float that is less than one
-    	$lessThanOneFloat = HandleData::float('0.292716');
-    	$this->assertEquals(0.292716, $lessThanOneFloat);
-
-    	// Parsing a negative float
-    	$negativeFloat = HandleData::float('-1.292716');
-    	$this->assertEquals(-1.292716, $negativeFloat);
-
-    	// Parsing a whole number as a float
-    	$wholeNumber = HandleData::float('1');
-    	$this->assertEquals(1.00, $wholeNumber);
-
-    	// Parsing 0 as a float where 0 strictness is not enforced
-    	$zero = HandleData::float('0', true);
-    	$this->assertEquals(0, $zero);
-
-    	/** 
-    	 * Integer Testing
-    	 */
-
-    	// Testing string passed as integer
-    	$integer = HandleData::integer('2');
-    	$this->assertEquals(2, $integer);
-
-    	// Testing negative integer
-    	$negativeInteger = HandleData::integer(-2);
-    	$this->assertEquals(-2, $negativeInteger);
-
-    	// Testing 0 with no 0 strictness
-    	$zero = HandleData::integer(0, true);
-    	$this->assertEquals(0, $zero);
-
     }
 
     // Testing invalid phone number
@@ -141,21 +80,6 @@ final class HandleDataTest extends TestCase {
     public function testInvalidPhoneNumberStartsNoOneElevenDigits() : void { $this->assertFalse(HandleData::american_phone('40869359921')); }
 
     // Testing invalid phone number empty string
-    public function testInvalidPhoneNumberEmptyString() : void { $this->assertFalse(HandleData::american_phone('')); }    
-
-    // Testing empty string with emptiness enforced
-    public function testInvalidString() : void { $this->assertFalse(HandleData::string('', false));}
-
-    // Testing invalid float passing 0
-    public function testInvalidFloatPassingZero() : void { $this->assertFalse(HandleData::float(0)); }
-
-    // Testing invalid float passing a string
-    public function testInvalidFloatPassingString() : void { $this->assertFalse(HandleData::float('not a valid float')); }
-
-    // Testing invalid integer passing 0
-    public function testInvalidIntegerPassingZero() : void { $this->assertFalse(HandleData::integer(0)); }
-
-    // Testing invalid integer passing a string
-    public function testInvalidIntegerPassingString() : void { $this->assertFalse(HandleData::integer('not a valid integer')); }
+    public function testInvalidPhoneNumberEmptyString() : void { $this->assertFalse(HandleData::american_phone('')); }
 
 }
