@@ -90,14 +90,6 @@ final class HandleDataTest extends TestCase {
     	$this->assertEquals('123456765456765', $numbersConverted);
 
     	/** 
-    	 * URL Testing
-    	 */
-
-    	// Testing regular URL
-    	$url = HandleData::url('https://shinesolar.com');
-    	$this->assertEquals('https://shinesolar.com', $url);
-
-    	/** 
     	 * Float Testing
     	 */
 
@@ -153,12 +145,6 @@ final class HandleDataTest extends TestCase {
 
     // Testing empty string with emptiness enforced
     public function testInvalidString() : void { $this->assertFalse(HandleData::string('', false));}
-
-    // Testing invalid url
-    public function testInvalidUrl() : void { $this->assertFalse(HandleData::url('shinesolar.com')); }
-
-    // Testing empty url
-    public function testEmptyInvalidUrl() : void { $this->assertFalse(HandleData::url('')); }
 
     // Testing invalid float passing 0
     public function testInvalidFloatPassingZero() : void { $this->assertFalse(HandleData::float(0)); }
