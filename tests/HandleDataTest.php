@@ -5,31 +5,13 @@ use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
 require 'src/ShinePHP/HandleData.php';
-require 'src/ShinePHP/Data/EmailValidator.php';
 use ShinePHP\{HandleData, IpValidator, PrimitiveDataValidator};
-use ShinePHP\Data\EmailValidator;
 
 final class HandleDataTest extends TestCase {
 
     public function testInvalidPrimitiveTypes(): void {
         $EmptyStringValidator = new PrimitiveDataValidator('');
         $this->assertFalse($EmptyStringValidator->validate_string());
-    }
-
-    public function testInvalidEmailAddresses(): void {
-        $EmailValidator = new EmailValidator('not an email');
-        $this->assertNull($EmailValidator->validate_email());
-        $DomainValidator = new EmailValidator('amcgurk@shinesolar.com');
-        $this->assertNull($DomainValidator->validate_email_domain('gmail.com'));
-        $InvalidEmailDomainValidator = new EmailValidator('nope');
-        $this->assertNull($InvalidEmailDomainValidator->validate_email_domain('gmail.com'));
-    }
-
-    public function testValidEmailAddresses(): void {
-        $EmailValidator = new EmailValidator('amcgurk@shinesolar.com');
-        $this->assertEquals($EmailValidator->validate_email(), 'amcgurk@shinesolar.com');
-        $DomainValidator = new EmailValidator('amcgurk@shinesolar.com');
-        $this->assertEquals($DomainValidator->validate_email_domain('shinesolar.com'), 'amcgurk@shinesolar.com');
     }
 
     public function testValidIpAddresses(): void {
