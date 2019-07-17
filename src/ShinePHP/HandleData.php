@@ -228,42 +228,6 @@ final class PrimitiveDataValidator {
 
 }
 
-final class UrlValidator {
-
-	private $domain;
-	private $protocol;
-	private $validated_url;
-
-	public function __construct(string $raw_url) {
-		$sanitized_url = filter_var($raw_url, FILTER_SANITIZE_URL);
-		$this->validated_url = filter_var($sanitized_url, FILTER_VALIDATE_URL);
-		$this->domain = '';//;
-	}
-
-	public function validate_url() { return $this->validated_url; }
-
-	public function validate_domain(string $domain) {
-
-		// not a valid url, so just stop
-		if (!$this->validated_url) return false;
-
-		// doing the domain check
-		return ($this->domain === $domain ? $this->validated_url : false);
-
-	}
-
-	public function validate_protocol(string $protocol) {
-
-		// not a valid url, so just stop
-		if (!$this->validated_url) return false;
-
-		// doing the domain check
-		return ($this->protocol === $protocol ? $this->validated_url : false);
-
-	}
-
-}
-
 final class IpValidator {
 
 	private $raw_address;
