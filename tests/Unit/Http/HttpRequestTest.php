@@ -25,10 +25,4 @@ final class HttpRequestTest extends TestCase {
 
 	}
 
-	// Testing valid JSON input from url (will usually be from php://input though)
-	public function testingValidJsonInputFromUrl() : void {
-		$jsonRetrieved = HttpRequest::get_json_input('https://jsonplaceholder.typicode.com/posts');
-		$this->assertArrayHasKey(50, $jsonRetrieved);
-	}
-
 }
