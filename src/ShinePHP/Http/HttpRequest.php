@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ShinePHP;
+namespace ShinePHP\Http;
 
 final class HttpRequest {
 
