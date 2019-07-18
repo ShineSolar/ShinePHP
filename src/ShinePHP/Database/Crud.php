@@ -10,8 +10,8 @@ namespace ShinePHP\Database;
  * syntactical naming and safe by default queries WITH table sanitization built in (unlike vanilla PDO)
  * 
  * EXAMPLE USAGE:
- * $pdo = new Crud();
- * $db_return = $pdo->read('SELECT * FROM users WHERE id = ?', [1]);
+ * $db_connection = new Crud();
+ * $db_return = $db_connection->read('SELECT * FROM users WHERE id = ?', [1]);
  * $user = $dbReturn[0];
  *
  * @author Adam McGurk <amcgurk@shinesolar.com>
