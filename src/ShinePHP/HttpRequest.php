@@ -94,7 +94,7 @@ final class HttpRequest {
 	 *
 	 */
 
-	public static function is_https() : bool { return ($_SERVER['REQUEST_SCHEME'] === 'https' || $_SERVER['HTTP_HOST'] === 'localhost' ? true : false); }
+	public static function is_https() : bool { return ($_SERVER['REQUEST_SCHEME'] === 'https' || $_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTPS'] === 'on' ? true : false); }
 
 	/**
 	 *
