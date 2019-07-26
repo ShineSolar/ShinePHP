@@ -10,8 +10,8 @@ namespace ShinePHP;
  * syntactical naming and safe by default queries WITH table sanitization built in (unlike vanilla PDO)
  * 
  * EXAMPLE USAGE:
- * $pdo = new Crud();
- * $db_return = $pdo->read('SELECT * FROM users WHERE id = ?', [1]);
+ * $Crud = new Crud();
+ * $db_return = $Crud->read('SELECT * FROM users WHERE id = ?', [1]);
  * $user = $dbReturn[0];
  *
  * @author Adam McGurk <amcgurk@shinesolar.com>
@@ -41,14 +41,14 @@ final class Crud {
 	 */
 
 	public function __construct(bool $development_mode = false) {
-		$server = '127.0.0.1'; // This one might not change
-		$dbname = 'crud_test'; // Change this to the name of the database you are working with
-		if ($dbname === 'crud_test' && $development_mode === false) {
-			throw new CrudException('Database details not changed! Please go into the class file and change the login details to match your specific DB.');
+		$server = (getenv('DB_SERVER') ? getenv('DB_SERVER') : '127.0.0.1');
+		if (!getenv('DB_NAME') || !getenv('DB_USERNAME') || !getenv('DB_PASSWORD')) {
+			throw new CrudException('Database details not set. Please set your database name, username, and password in your environment variables.');
 		}
+		$dbname = getenv('DB_NAME');
 		$dsn = 'mysql:host='.$server.';dbname='.$dbname; // Right now we only support mysql/mariadb
-		$username = 'your_mysql_client'; // Change this to the name of your mysql user
-		$password = 'your_mysql_password'; // Change this to the password of your mysql user
+		$username = getenv('DB_USERNAME');
+		$password = getenv('DB_PASSWORD');
 		$options = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC);
 	    try {
 	        $pdo = new \PDO($dsn, $username, $password, $options);
