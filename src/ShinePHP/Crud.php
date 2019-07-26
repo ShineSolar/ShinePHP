@@ -47,6 +47,7 @@ final class Crud {
 		}
 		$dbname = getenv('DB_NAME');
 		$dsn = 'mysql:host='.$server.';dbname='.$dbname; // Right now we only support mysql/mariadb
+		$dsn = (getenv('DB_DSN' ? getenv('DB_DSN') : $dsn);
 		$username = getenv('DB_USERNAME');
 		$password = getenv('DB_PASSWORD');
 		$options = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC);
