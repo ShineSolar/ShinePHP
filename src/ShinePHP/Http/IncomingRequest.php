@@ -5,21 +5,6 @@ namespace ShinePHP\Http;
 
 final class IncomingRequest {
 
-	/** 
-	 *  @access private
-	 *	@var array These are the headers you want set for your request
-	 */
-	private $headers;
-
-	public function __construct(array $headers = []) {
-
-		// looping through and setting each header individually
-		foreach($headers as $key => $value) {
-			\header($key.': '.$value);
-		}
-
-	}
-
 	public function validate_https(): bool {
 		return ($_SERVER['REQUEST_SCHEME'] === 'https' || $_SERVER['HTTP_HOST'] === 'localhost' ? true : false);
 	}
@@ -49,6 +34,24 @@ final class IncomingRequest {
 
 		// return an empty array if there was no json to return, otherwise return the decoded json
 		return (is_null($decoded_json) ? array() : $decoded_json);
+
+	}
+
+	public function require_input_data(?array $input_data, array $field_names_to_validate): array {
+
+		if (empty($input_data) || is_null($input_data)) {
+			throw new \Exception('Input cannot be empty');
+		}
+
+		foreach ($required_input_names as $name) {
+
+			if (array_key_exists($name, $input_data) === false) {
+				throw new \Exception($name.' cannot be omitted');
+			}
+			
+		}
+
+		return $input_data;
 
 	}
 
