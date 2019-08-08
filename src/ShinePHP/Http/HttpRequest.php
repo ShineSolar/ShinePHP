@@ -17,68 +17,73 @@ final class HttpRequest {
 	 */
 	private $headers;
 
-	public function __construct(string $url, array $headers = []) {
+	/** 
+	 *  @access private
+	 *	@var string The REST method that we will be using
+	 */
+	private $method;
+
+	public function __construct(string $url, string $method, array $headers = array()) {
 
 		// setting the class vars
 		$this->url = $url;
 		$this->headers = $headers;
+		$this->method = $this->verify_method($method);
 
 	}
 
-	public function post(string $stringified_data = '', array $query_params = []) {
+	public send($prepared_data = '', array $query_params = array()) {
+		$this->build_url($query_params);
+		return self::request($prepared_data, $this->method);
+	}
 
-		// setting URL
-		if (!empty($query_params)) {
+	private function verify_method(string $method): string {
 
-			$parsed_url = \parse_url($this->url);
+		$upper_cased_method = strtoupper($method);
 
-			$url = (isset($parsed_url['query']) ? $this->url.'&'.http_build_query($query_params) : $this->url.'?'.http_build_query($query_params));
+		switch ($upper_cased_method) {
 
-		} else {
-			$url = $this->url;
+			case 'POST':
+			case 'GET':
+			case 'DELETE':
+			case 'PUT':
+			case 'HEAD':
+				return $upper_cased_method;
+			break;
+
+			default:
+				throw new Exception('The HTTP request method must be one of: POST, GET, PUT, DELETE, or HEAD');
+
 		}
 
-		// opening cURL
-		$req = curl_init($url);
+	}
 
-		// setting cURL options
-		curl_setopt($req, CURLOPT_HTTPHEADER, $this->headers);
-		curl_setopt($req, CURLOPT_POST, 1);
-		curl_setopt($req, CURLOPT_POSTFIELDS, $stringified_data);
-		curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
+	public function build_url(array $query_params): void {
 
-		// executing and closing the request
-		$response = curl_exec($req);
-		curl_close($req);
-
-		return $response;
-
-	} 
-
-	public function get(array $query_params = []) {
-
-		// setting URL
-		if (!empty($query_params)) {
-
-			$parsed_url = \parse_url($this->url);
-
-			$url = (isset($parsed_url['query']) ? $this->url.'&'.http_build_query($query_params) : $this->url.'?'.http_build_query($query_params));
-
-		} else {
-			$url = $this->url;
+		if (empty($query_params)) {
+			return $this->url;
 		}
 
-		// opening cURL
-		$url = (empty($query_params) ? $this->url : $this->url.http_build_query($query_params));
-		$req = curl_init($url);
+		$parsed_url = \parse_url($this->url);
 
-		// setting cURL options
-		curl_setopt($req, CURLOPT_HTTPHEADER, $this->headers);
-		curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
+		return (isset($parsed_url['query']) ? $this->url.'&'.http_build_query($query_params) : $this->url.'?'.http_build_query($query_params));
 
-		// executing and closing the request
-		$response = curl_exec($req);
-		curl_close($req);
+	}
+
+	private static function request($prepared_data, string $method) {
+
+		$request = curl_init($this->url);
+		curl_setopt($request, CURLOPT_HTTPHEADER, $this->headers);
+		curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+
+		if ($method === 'POST') {
+			curl_setopt($request, CURLOPT_POST, 1);
+			curl_setopt($request, CURLOPT_POSTFIELDS, $prepared_data);
+		}
+
+		$response = curl_exec($request);
+
+		curl_close($request);
 
 		return $response;
 
