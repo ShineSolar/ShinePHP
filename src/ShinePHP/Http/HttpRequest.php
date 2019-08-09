@@ -7,43 +7,62 @@ final class HttpRequest {
 
 	/** 
 	 *  @access private
-	 *	@var string This is the base URL that you will be using to make calls on this instance of the class
+	 *	@var CURLResource the actual curl resource used throughout the app
 	 */
-	private $url;
+	private $curl_handle;
 
-	/** 
-	 *  @access private
-	 *	@var array This is the array of headers that will be passed on every request
-	 */
-	private $headers;
-
-	/** 
-	 *  @access private
-	 *	@var string The REST method that we will be using
-	 */
-	private $method;
-
-	public function __construct(string $url, string $method, array $headers = array()) {
+	public function __construct(string $method, string $url, array $query_params = array()) {
 
 		// setting the class vars
-		$this->url = $url;
-		$this->headers = $headers;
-		$this->method = $this->verify_method($method);
+		$verified_method = self::verify_method($method);
+
+		$this->curl_handle = curl_init(self::build_url($url, $query_params));
+
+		if ($verified_method === 'POST') {
+			curl_setopt($this->curl_handle, CURLOPT_POST, 1);
+		} else if ($verified_method !== 'GET') {
+			curl_setopt($this->curl_handle, CURLOPT_CUSTOMREQUEST, $verified_method);
+		}
+
+		curl_setopt($this->curl_handle, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($this->curl_handle, CURLOPT_FAILONERROR, true);
+		curl_setopt($this->curl_handle, CURLOPT_DEFAULT_PROTOCOL, 'https');
 
 	}
 
-	public function send($prepared_data = '', array $query_params = array()): ?string {
-		return self::request(array(
-			'url' => self::build_url($this->url, $query_params),
-			'headers' => $this->headers,
-			'method' => $this->method
-		), $prepared_data);
+	public function set_request_headers(array $headers): void {
+		curl_setopt($this->curl_handle, CURLOPT_HTTPHEADER, $headers);
 	}
 
-	private function verify_method(string $method): string {
+	public function do_basic_auth(string $username, string $password): void {
+		curl_setopt($this->curl_handle, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		curl_setopt($this->curl_handle, CURLOPT_USERPWD, $username.':'.$password);
+	}
+
+	public function set_oauth_token(string $token): void {
+		curl_setopt($this->curl_handle, CURLOPT_XOAUTH2_BEARER, $token);
+	}
+
+	public function send($post_data = ''): ?string {
+
+		if (!empty($post_data)) {
+			curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $post_data);
+		}
+
+		$curl_response = curl_exec($this->curl_handle);
+
+		if ($curl_response === false) {
+			throw new HttpException('HTTP Error: '.curl_error($this->curl_handle));
+		}
+
+		return $curl_response;
+
+	}
+
+	private static function verify_method(string $method): string {
 
 		// Request verbs should be normalized to uppercase
-		$upper_cased_method = strtoupper($method);
+		$upper_cased_method = \strtoupper($method);
 
 		switch ($upper_cased_method) {
 
@@ -56,7 +75,7 @@ final class HttpRequest {
 			break;
 
 			default:
-				throw new \Exception('The HTTP request method must be one of POST or GET');
+				throw new HttpException('The HTTP request method must be one of POST or GET');
 
 		}
 
@@ -71,34 +90,6 @@ final class HttpRequest {
 		$parsed_url = \parse_url($url);
 
 		return (isset($parsed_url['query']) ? $url.'&'.http_build_query($query_params) : $url.'?'.http_build_query($query_params));
-
-	}
-
-	private static function request(array $request_configs, $prepared_data): ?string {
-
-		$request = curl_init($request_configs['url']);
-		curl_setopt($request, CURLOPT_HTTPHEADER, $request_configs['headers']);
-		curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($request, CURLOPT_FAILONERROR, true);
-		curl_setopt($request, CURLOPT_DEFAULT_PROTOCOL, 'https');
-
-		if ($request_configs['method'] === 'POST') {
-			curl_setopt($request, CURLOPT_POST, 1);
-			curl_setopt($request, CURLOPT_POSTFIELDS, $prepared_data);
-		} else if ($request_configs['method'] !== 'GET') {
-			curl_setopt($request, CURLOPT_CUSTOMREQUEST, $request_configs['method']);
-			curl_setopt($request, CURLOPT_POSTFIELDS, $prepared_data);
-		}
-
-		$response = curl_exec($request);
-
-		if ($response === false) {
-			throw new HttpException('HTTP error: '.curl_error($request));
-		}
-
-		curl_close($request);
-
-		return $response;
 
 	}
 
