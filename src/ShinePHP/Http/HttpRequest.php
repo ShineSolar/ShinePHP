@@ -50,6 +50,8 @@ final class HttpRequest {
 			// right now we only support POST and GET
 			case 'POST':
 			case 'GET':
+			case 'PUT':
+			case 'DELETE':
 				return $upper_cased_method;
 			break;
 
@@ -77,13 +79,22 @@ final class HttpRequest {
 		$request = curl_init($request_configs['url']);
 		curl_setopt($request, CURLOPT_HTTPHEADER, $request_configs['headers']);
 		curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($request, CURLOPT_FAILONERROR, true);
+		curl_setopt($request, CURLOPT_DEFAULT_PROTOCOL, 'https');
 
 		if ($request_configs['method'] === 'POST') {
 			curl_setopt($request, CURLOPT_POST, 1);
 			curl_setopt($request, CURLOPT_POSTFIELDS, $prepared_data);
+		} else if ($request_configs['method'] !== 'GET') {
+			curl_setopt($request, CURLOPT_CUSTOMREQUEST, $request_configs['method']);
+			curl_setopt($request, CURLOPT_POSTFIELDS, $prepared_data);
 		}
 
 		$response = curl_exec($request);
+
+		if ($response === false) {
+			throw new HttpException('HTTP error: '.curl_error($request));
+		}
 
 		curl_close($request);
 
