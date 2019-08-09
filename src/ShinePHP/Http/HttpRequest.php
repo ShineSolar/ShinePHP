@@ -92,3 +92,5 @@ final class HttpRequest {
 	}
 
 }
+
+final class HttpException extends \Exception {}
