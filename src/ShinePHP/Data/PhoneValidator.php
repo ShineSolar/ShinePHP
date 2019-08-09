@@ -44,8 +44,11 @@ final class AmericanPhone implements PhoneValidator {
 		$prefix = \substr($validated_phone,3,3);
 		$last_four = \substr($validated_phone,6,4);
 
+		// building the number, because regardless of the country code, the base number will still be formatted the same
+		$formatted_number = '('.$area_code.') '.$prefix.'-'.$last_four;
+
 		// returning the formate requested
-		return ($include_country_code ? '1 ('.$area_code.') '.$prefix.'-'.$last_four : '('.$area_code.') '.$prefix.'-'.$last_four);
+		return ($include_country_code ? '1 '.$formatted_number : $formatted_number);
 
 	}
 
