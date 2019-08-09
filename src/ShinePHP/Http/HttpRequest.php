@@ -32,51 +32,53 @@ final class HttpRequest {
 
 	}
 
-	public send($prepared_data = '', array $query_params = array()) {
-		$this->build_url($query_params);
-		return self::request($prepared_data, $this->method);
+	public function send($prepared_data = '', array $query_params = array()): ?string {
+		return self::request(array(
+			'url' => self::build_url($this->url, $query_params),
+			'headers' => $this->headers,
+			'method' => $this->method
+		), $prepared_data);
 	}
 
 	private function verify_method(string $method): string {
 
+		// Request verbs should be normalized to uppercase
 		$upper_cased_method = strtoupper($method);
 
 		switch ($upper_cased_method) {
 
+			// right now we only support POST and GET
 			case 'POST':
 			case 'GET':
-			case 'DELETE':
-			case 'PUT':
-			case 'HEAD':
 				return $upper_cased_method;
 			break;
 
 			default:
-				throw new Exception('The HTTP request method must be one of: POST, GET, PUT, DELETE, or HEAD');
+				throw new \Exception('The HTTP request method must be one of POST or GET');
 
 		}
 
 	}
 
-	public function build_url(array $query_params): void {
+	public static function build_url(string $url, array $query_params): string {
 
 		if (empty($query_params)) {
-			return $this->url;
+			return $url;
 		}
 
-		$parsed_url = \parse_url($this->url);
+		$parsed_url = \parse_url($url);
 
-		return (isset($parsed_url['query']) ? $this->url.'&'.http_build_query($query_params) : $this->url.'?'.http_build_query($query_params));
+		return (isset($parsed_url['query']) ? $url.'&'.http_build_query($query_params) : $url.'?'.http_build_query($query_params));
 
 	}
 
-	private static function request($prepared_data, string $method) {
+	private static function request(array $request_configs, $prepared_data): ?string {
 
-		$request = curl_init($this->url);
-		curl_setopt($request, CURLOPT_HTTPHEADER, $this->headers);
+		$request = curl_init($request_configs['url']);
+		curl_setopt($request, CURLOPT_HTTPHEADER, $request_configs['headers']);
 		curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
 
-		if ($method === 'POST') {
+		if ($request_configs['method'] === 'POST') {
 			curl_setopt($request, CURLOPT_POST, 1);
 			curl_setopt($request, CURLOPT_POSTFIELDS, $prepared_data);
 		}
