@@ -76,7 +76,7 @@ final class Crud {
 	 *
 	 */
 
-	public function change(string $statement, array $values = []) : array {
+	public function change(string $statement, array $values = array()) : array {
 
 		// Checking if placeholder values exist, if not, a simple query will suffice
 		if (empty($values) && !strpos($statement, '?')) {
@@ -118,7 +118,7 @@ final class Crud {
 	 *
 	 */
 
-	public function read(string $statement, array $values = []) : array {
+	public function read(string $statement, array $values = array()) : array {
 
 		// Checking if placeholder values exist, if not, a simple query will suffice
 		if (empty($values) && !strpos($statement, '?')) {
@@ -145,7 +145,7 @@ final class Crud {
 	 * @access public
 	 *
 	 * @param string $name this is the name you want to sanitize
-	 * @param OPTIONAL array $whiteList if you want a whitelist to validate the dynamic name THIS IS THE MOST SECURE OPTION.
+	 * @param OPTIONAL array $white_list if you want a whitelist to validate the dynamic name THIS IS THE MOST SECURE OPTION.
 	 *
 	 * @throws CrudException when name does not exist in whitelist
 	 * 
@@ -153,13 +153,15 @@ final class Crud {
 	 *
 	 */
 
-	public static function sanitize_mysql(string $name, array $whiteList = []) : string {
+	public static function sanitize_mysql(string $name, array $white_list = array()) : string {
+
+		$searched_for_value = array_search($name, $white_list);
 
 		// Checking the name whitelist, throwing exception if name is not in whitelist
-		if (!empty($whiteList) && array_search($name, $whiteList) === false) { throw new CrudException('Value does not exist in value whitelist.'); } 
+		if (!empty($white_list) && $searched_for_value === false) { throw new CrudException('Value does not exist in value whitelist.'); } 
 
 		// returning the name if it passes the whitelist
-		else if (!empty($whiteList) && array_search($name, $whiteList) !== false) { return $name; } 
+		else if (!empty($white_list) && $searched_for_value !== false) { return $white_list[$searched_for_value]; } 
 
 		// sanitizes a name for use in the database
 		else { return '`'.str_replace('`','``',$name).'`'; }
