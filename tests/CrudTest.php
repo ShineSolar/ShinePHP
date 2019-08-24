@@ -5,10 +5,15 @@ use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
 require 'src/ShinePHP/Crud.php';
-require 'Tests/Unit/Database/db_details.php';
 use ShinePHP\{Crud, CrudException};
 
 final class CrudTest extends TestCase {
+
+    public function setUp(): void {
+        putenv('DB_NAME=crud_test');
+        putenv('DB_USERNAME=your_mysql_client');
+        putenv('DB_PASSWORD=your_mysql_password');
+    }
 
 	// Testing a valid class init
 	public function testCanBeCreatedWithDatabaseCredentials() : void {
