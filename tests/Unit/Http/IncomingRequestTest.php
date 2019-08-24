@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 require_once 'src/ShinePHP/Http/IncomingRequest.php';
 use ShinePHP\Http\IncomingRequest;
 
-final class HttpRequestTest extends TestCase {
+final class IncomingRequestTest extends TestCase {
 
 	public function testValidCreate() : void {
 

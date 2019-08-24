@@ -4,11 +4,16 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
-require 'Tests/Unit/Database/db_details.php';
 require 'src/ShinePHP/Database/Crud.php';
 use ShinePHP\Database\{Crud, CrudException};
 
 final class CrudTest extends TestCase {
+
+    public function setUp(): void {
+        define('DB_NAME', 'crud_test');
+        define('DB_USERNAME', 'your_mysql_client');
+        define('DB_PASSWORD', 'your_mysql_password');
+    }
 
 	// Testing a valid class init
 	public function test_valid_create() : void {

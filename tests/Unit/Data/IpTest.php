@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 require 'src/ShinePHP/Data/IpValidator.php';
 use ShinePHP\Data\IpValidator;
 
-final class TypeTest extends TestCase {
+final class IpTest extends TestCase {
 
     public function test_invalid(): void {
 

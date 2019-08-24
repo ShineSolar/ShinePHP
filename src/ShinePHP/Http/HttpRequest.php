@@ -11,7 +11,7 @@ final class HttpRequest {
 	 */
 	private $curl_handle;
 
-	public function __construct(string $method, string $url, array $query_params = array()) {
+	public function __construct(string $url, string $method = 'GET', array $query_params = array()) {
 
 		// setting the class vars
 		$verified_method = self::verify_method($method);
@@ -39,7 +39,7 @@ final class HttpRequest {
 		curl_setopt($this->curl_handle, CURLOPT_USERPWD, $username.':'.$password);
 	}
 
-	public function set_oauth_token(string $token): void {
+	public function set_oauth_bearer_token(string $token): void {
 		curl_setopt($this->curl_handle, CURLOPT_XOAUTH2_BEARER, $token);
 	}
 
@@ -66,7 +66,7 @@ final class HttpRequest {
 
 		switch ($upper_cased_method) {
 
-			// right now we only support POST and GET
+			// right now we only support POST, GET, PUT, and DELETE
 			case 'POST':
 			case 'GET':
 			case 'PUT':
@@ -75,7 +75,7 @@ final class HttpRequest {
 			break;
 
 			default:
-				throw new HttpException('The HTTP request method must be one of POST or GET');
+				throw new HttpException('The HTTP request method must be one of POST, GET, PUT, or DELETE');
 
 		}
 

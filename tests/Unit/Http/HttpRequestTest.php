@@ -18,7 +18,7 @@ final class HttpRequestTest extends TestCase {
 
 		$this->assertInstanceOf(
 			HttpRequest::class,
-			new HttpRequest('POST', 'https://alsjdflaksj')
+			new HttpRequest('https://alsjdflaksj', 'POST')
 		);
 
 	}
@@ -31,11 +31,11 @@ final class HttpRequestTest extends TestCase {
 	}
 
 	public function test_get_request(): void {
-		$req = new HttpRequest('GET', 'https://postman-echo.com/get?foo=bar');
+		$req = new HttpRequest('https://postman-echo.com/get?foo=bar');
 		$req->set_request_headers(array('Content-Type: application/json'));
 		$res = $req->send();
 		$decoded_res = json_decode($res, true);
-		$this->assertArrayHasKey($decoded_res, 'args');
+		$this->assertArrayHasKey('args', $decoded_res);
 	}
 
 }
