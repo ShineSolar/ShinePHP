@@ -5,6 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
 require 'src/ShinePHP/Crud.php';
+require 'Tests/Unit/Database/db_details.php';
 use ShinePHP\{Crud, CrudException};
 
 final class CrudTest extends TestCase {
@@ -15,12 +16,6 @@ final class CrudTest extends TestCase {
             Crud::class,
             new Crud(true)
         );
-    }
-
-    // Testing an invalid class init
-    public function testCannotBeCreatedWithDefaultDatabaseCredentials() : void {
-    	$this->expectException(CrudException::class);
-    	new Crud();
     }
 
     // Testing valid INSERT/UPDATE/DELETE statements 
