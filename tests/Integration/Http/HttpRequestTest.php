@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 require_once 'src/ShinePHP/Http/HttpRequest.php';
 use ShinePHP\Http\{HttpRequest};
 
-final class HttpRequestTest extends TestCase {
+final class HttpRequestIntegrationTest extends TestCase {
 
 	public function test_fail_to_create_instance(): void {
 		$this->expectException(Exception::class);

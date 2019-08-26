@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 require_once 'src/ShinePHP/Http/HttpRequest.php';
 use ShinePHP\Http\{HttpRequest};
 
-final class HttpRequestTest extends TestCase {
+final class HttpRequestUnitTest extends TestCase {
 
 	public function test_regular_url(): void {
 		$this->assertEquals('https://google.com/', HttpRequest::build_url('https://google.com/', array()));

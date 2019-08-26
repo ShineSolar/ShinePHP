@@ -4,10 +4,10 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
-require 'src/ShinePHP/Database/Crud.php';
+require_once 'src/ShinePHP/Database/Crud.php';
 use ShinePHP\Database\{Crud, CrudException};
 
-final class CrudTest extends TestCase {
+final class CrudIntegrationTest extends TestCase {
 
 	public function testEnvNotEnoughValues(): void {
 		$this->expectException(CrudException::class);
