@@ -11,7 +11,7 @@ final class HttpRequestIntegrationTest extends TestCase {
 
 	public function test_fail_to_create_instance(): void {
 		$this->expectException(Exception::class);
-		new HttpRequest('Not a method', 'https://google.com/');
+		new HttpRequest('https://google.com/', 'HEAD');
 	}
 
 	public function test_can_create_instance(): void {
