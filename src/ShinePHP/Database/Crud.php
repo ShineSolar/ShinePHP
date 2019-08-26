@@ -121,7 +121,7 @@ final class Crud {
 		}
 
 		// parsing the file and making sure it's a valid ini file
-		$parsed_ini_file = \parse_ini_file($path);
+		$parsed_ini_file = \parse_ini_file($path, false, INI_SCANNER_RAW);
 		if ($parsed_ini_file === FALSE) {
 			throw new CrudException('Sorry, the file passed is not a valid .ini file.');
 		}
