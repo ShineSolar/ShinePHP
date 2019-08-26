@@ -16,4 +16,16 @@ final class HttpRequestUnitTest extends TestCase {
 		$this->assertEquals('https://google.com/?q=searchquery', HttpRequest::build_url('https://google.com/', array('q' => 'searchquery')));
 	}
 
+	public function test_invalid_method(): void {
+		$this->expectException(HttpRequestException::class);
+		HttpRequest::verify_method('HEAD');
+	}
+
+	public function test_valid_methods(): void {
+		$this->assertEquals('PUT', HttpRequest::verify_method('put'));
+		$this->assertEquals('GET', HttpRequest::verify_method('get'));
+		$this->assertEquals('POST', HttpRequest::verify_method('post'));
+		$this->assertEquals('DELETE', HttpRequest::verify_method('delete'));
+	}
+
 }

@@ -59,7 +59,7 @@ final class HttpRequest {
 
 	}
 
-	private static function verify_method(string $method): string {
+	public static function verify_method(string $method): string {
 
 		// Request verbs should be normalized to uppercase
 		$upper_cased_method = \strtoupper($method);
