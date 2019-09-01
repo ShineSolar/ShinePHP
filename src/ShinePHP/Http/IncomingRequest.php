@@ -40,13 +40,13 @@ final class IncomingRequest {
 	public function require_input_data(?array $input_data, array $field_names_to_validate): array {
 
 		if (empty($input_data) || \is_null($input_data)) {
-			throw new \Exception('Input cannot be empty');
+			throw new IncomingRequestException('Input cannot be empty');
 		}
 
 		foreach ($required_input_names as $name) {
 
 			if (\array_key_exists($name, $input_data) === false) {
-				throw new \Exception($name.' cannot be omitted');
+				throw new IncomingRequestException($name.' cannot be omitted');
 			}
 			
 		}
@@ -56,3 +56,5 @@ final class IncomingRequest {
 	}
 
 }
+
+final class IncomingRequestException extends \Exception {}

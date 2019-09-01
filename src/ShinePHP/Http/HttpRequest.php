@@ -52,7 +52,7 @@ final class HttpRequest {
 		$curl_response = \curl_exec($this->curl_handle);
 
 		if ($curl_response === false) {
-			throw new HttpException('HTTP Error: '.curl_error($this->curl_handle));
+			throw new HttpRequestException('HTTP Error: '.curl_error($this->curl_handle));
 		}
 
 		return $curl_response;
@@ -75,7 +75,7 @@ final class HttpRequest {
 			break;
 
 			default:
-				throw new HttpException('The HTTP request method must be one of POST, GET, PUT, or DELETE');
+				throw new HttpRequestException('The HTTP request method must be one of POST, GET, PUT, or DELETE');
 
 		}
 
@@ -95,4 +95,4 @@ final class HttpRequest {
 
 }
 
-final class HttpException extends \Exception {}
+final class HttpRequestException extends \Exception {}

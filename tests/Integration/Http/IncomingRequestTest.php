@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
 require_once 'src/ShinePHP/Http/IncomingRequest.php';
-use ShinePHP\Http\IncomingRequest;
+use ShinePHP\Http\{IncomingRequest, IncomingRequestException};
 
 final class IncomingRequestIntegrationTest extends TestCase {
 

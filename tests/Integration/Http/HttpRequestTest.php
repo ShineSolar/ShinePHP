@@ -5,12 +5,12 @@ use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
 require_once 'src/ShinePHP/Http/HttpRequest.php';
-use ShinePHP\Http\{HttpRequest};
+use ShinePHP\Http\{HttpRequest, HttpRequestException};
 
 final class HttpRequestIntegrationTest extends TestCase {
 
 	public function test_fail_to_create_instance(): void {
-		$this->expectException(Exception::class);
+		$this->expectException(HttpRequestException::class);
 		new HttpRequest('https://google.com/', 'HEAD');
 	}
 

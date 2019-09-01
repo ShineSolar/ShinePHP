@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
 require_once 'src/ShinePHP/Http/HttpRequest.php';
-use ShinePHP\Http\{HttpRequest};
+use ShinePHP\Http\{HttpRequest, HttpRequestException};
 
 final class HttpRequestUnitTest extends TestCase {
 
