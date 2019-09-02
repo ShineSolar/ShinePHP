@@ -37,20 +37,21 @@ final class IncomingRequest {
 
 	}
 
-	public function require_input_data(?array $input_data, array $field_names_to_validate): array {
+	public function require_input_data(?array $input_data, array $field_names_to_validate = array()): array {
 
+		// making sure the data isn't null or empty
 		if (empty($input_data) || \is_null($input_data)) {
 			throw new IncomingRequestException('Input cannot be empty');
 		}
 
-		foreach ($required_input_names as $name) {
-
-			if (\array_key_exists($name, $input_data) === false) {
-				throw new IncomingRequestException($name.' cannot be omitted');
+		// if you pass an array to $field_names_to_validate, this will make sure that it won't be omitted
+		\array_map(function($field) use ($input_data) {
+			if (\array_key_exists($field, $input_data) === false) {
+				throw new IncomingRequestException($field.' cannot be omitted');
 			}
-			
-		}
+		}, $field_names_to_validate);
 
+		// returning the array
 		return $input_data;
 
 	}

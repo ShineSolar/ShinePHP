@@ -9,6 +9,24 @@ use ShinePHP\Http\{IncomingRequest, IncomingRequestException};
 
 final class IncomingRequestUnitTest extends TestCase {
 
-	// test the input sanitizer
+	public function test_cannot_pass_null(): void {
+		$this->expectException(IncomingRequestException::class);
+		IncomingRequest::require_input_data(null);
+	}
+
+	public function test_cannot_pass_empty_array(): void {
+		$this->expectException(IncomingRequestException::class);
+		IncomingRequest::require_input_data(array());
+	}
+
+	public function test_name_does_not_exist(): void {
+		$this->expectException(IncomingRequestException::class);
+		IncomingRequest::require_input_data(array('foo' => 'bar'), array('bash'));
+	}
+
+	public function test_requires(): void {
+		$input_data = IncomingRequest::require_input_data(array('foo' => 'bar'), array('foo'));
+		$this->assertEquals('bar', $input_data['foo']);
+	}
 
 }
