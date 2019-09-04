@@ -11,5 +11,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install Dependencies
       run: composer install
-    - name: Run Tests
-      run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/.
+    - name: Run Unit Tests
+      run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit/.
+    - name: Run Integration Tests
+      run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Integration/.
