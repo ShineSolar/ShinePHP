@@ -30,16 +30,16 @@ final class CrudIntegrationTest extends TestCase {
 
 	public function testNotValidIniFile(): void {
 		$this->expectException(CrudException::class);
-		Crud::get_from_ini_file('tests/integration/database/test_files/test.txt');
+		Crud::get_from_ini_file('tests/Integration/Database/test_files/test.txt');
 	}
 
 	public function testIniNotEnoughValues(): void {
 		$this->expectException(CrudException::class);
-		Crud::get_from_ini_file('tests/integration/database/test_files/test_invalid.ini');
+		Crud::get_from_ini_file('tests/Integration/Database/test_files/test_invalid.ini');
 	}
 
     public function testIni(): void {
-        $db_details = Crud::get_from_ini_file('tests/integration/database/test_files/test_valid.ini');
+        $db_details = Crud::get_from_ini_file('tests/Integration/Database/test_files/test_valid.ini');
         $this->assertEquals('your_mysql_client', $db_details['username']);
     }
 
