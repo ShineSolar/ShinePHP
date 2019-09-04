@@ -39,6 +39,8 @@ final class CrudIntegrationTest extends TestCase {
 	}
 
     public function testIni(): void {
+    	echo `pwd`;
+    	echo `ls`;
         $db_details = Crud::get_from_ini_file('Tests/Integration/Database/test_files/test_valid.ini');
         $this->assertEquals('your_mysql_client', $db_details['username']);
     }
