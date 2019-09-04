@@ -6,5 +6,5 @@ vendor/
 *.sublime-workspace
 *.log
 *.sql
-composer.lock
 !.gitignore
+!.github
