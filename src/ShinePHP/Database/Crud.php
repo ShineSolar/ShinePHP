@@ -240,20 +240,37 @@ final class Crud {
 
 	private static function run_query(\PDO $pdo, string $statement, array $values): \PDOStatement {
 
-		// Checking if placeholder values exist, if not, a simple query will suffice
-		if (empty($values) && !\strpos($statement, '?')) {
+		try {
 
-			// Running the statement and returning the return (no throwing exception on empty return)
-			$stmt = $this->pdo->query($statement);
+			// beginning a transaction, so if something goes wrong, we can roll it back
+			$pdo->beginTransaction();
 
-		} else {
+			// Checking if placeholder values exist, if not, a simple query will suffice
+			if (empty($values) && !\strpos($statement, '?')) {
 
-			// Running the statement and returning the return (no throwing exception on empty return)
-			$stmt = $this->pdo->prepare($statement);
-			$stmt->execute($values);
+				// Running the statement and returning the return (no throwing exception on empty return)
+				$stmt = $pdo->query($statement);
 
+			} else {
+
+				// Running the statement and returning the return (no throwing exception on empty return)
+				$stmt = $pdo->prepare($statement);
+				$stmt->execute($values);
+
+			}
+
+			// committing the transaction
+			$pdo->commit();
+
+		} catch (\PDOException $pex) {
+
+			// rolling back a failed transaction
+			$pdo->rollback();
+			throw new CrudException('Something went wrong while running the query. The transaction has been rolled back and no commit has happend. Here is the error message: '.$pex->getMessage());
+		
 		}
 
+		// returning the statement
 		return $stmt;
 
 	}
