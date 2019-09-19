@@ -184,7 +184,8 @@ final class Crud {
 	 * @access public
 	 *
 	 * @param string $statement the correctly formed SQL statement
-	 * @param OPTIONAL array $values the values to replace the SQL placeholders
+	 * @param OPTIONAL array $values the values to replace the SQL placeholders DEFAULTS TO EMPTY
+	 * @param OPTIONAL boolean $return_single_level A flag to say if only one row is returned, only return the row, not an assoc arrary CONTAINING that row
 	 * 
 	 * @return array of rows.
 	 *
@@ -195,7 +196,7 @@ final class Crud {
 	 *
 	 */
 
-	public function read(string $statement, array $values = array()) : array {
+	public function read(string $statement, array $values = array(), bool $return_single_level = false) : array {
 
 		// running the query
 		$stmt = self::run_query($this->pdo, $statement, $values);
@@ -205,6 +206,12 @@ final class Crud {
 
 		// closing the cursor for perf reasons
 		$stmt->closeCursor();
+
+		// This checks if there was only one row returned
+		// AND IF the return single level flag was set as true, it just returns that one row, as opposed to an assoc array only CONTAINING that one row
+		if (\count($db_return) === 1 && $return_single_level === true) {
+			return $db_return[0];
+		}
 
 		// returning the SELECT'd data
 		return $db_return;
