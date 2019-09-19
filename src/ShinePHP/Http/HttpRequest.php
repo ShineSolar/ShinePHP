@@ -43,7 +43,7 @@ final class HttpRequest {
 		\curl_setopt($this->curl_handle, CURLOPT_XOAUTH2_BEARER, $token);
 	}
 
-	public function send($post_data = '', $throw_on_error = false): ?string {
+	public function send($post_data = '', bool $throw_on_error = false): ?string {
 
 		if (!empty($post_data)) {
 			\curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $post_data);
