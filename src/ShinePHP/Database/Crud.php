@@ -209,6 +209,10 @@ final class Crud {
 
 		// This checks if there was only one row returned
 		// AND IF the return single level flag was set as true, it just returns that one row, as opposed to an assoc array only CONTAINING that one row
+		// I did this because sometimes it would be nice if we could access the return like this:
+		// $Crud = new Crud();
+		// $return = $Crud->read('SELECT name FROM users WHERE id = ?', array('1'));
+		// echo $return['name'] -> "Adam"
 		if (\count($db_return) === 1 && $return_single_level === true) {
 			return $db_return[0];
 		}
