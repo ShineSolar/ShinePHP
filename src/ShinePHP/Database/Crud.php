@@ -146,6 +146,7 @@ final class Crud {
 	/**
 	 *
 	 * Runs a PDO MySQL INSERT, UPDATE, or DELETE statement
+	 * We also wrap running the actual query in a Try/Catch for transactional reasons
 	 *
 	 * @access public
 	 *
