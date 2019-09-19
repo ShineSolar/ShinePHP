@@ -160,8 +160,16 @@ final class Crud {
 
 	public function change(string $statement, array $values = array()) : array {
 
-		// running the query
-		$stmt = self::run_query($this->pdo, $statement, $values);
+		// running a transaction
+		try {
+			$this->pdo->beginTransaction();
+			$stmt = self::run_query($this->pdo, $statement, $values);
+			$this->pdo->commit();
+		} catch (\Exception|\PDOException $pex) {
+			$this->pdo->rollBack();
+			throw new CrudException('There has been a problem with the database transaction. It has been rolled back. Here is the error message: '.$pex->getMessage());
+		}
+		
 
 		// getting the most recent id inserted and getting the amount of rows affected
 		$db_return = array(
@@ -240,34 +248,18 @@ final class Crud {
 
 	private static function run_query(\PDO $pdo, string $statement, array $values): \PDOStatement {
 
-		try {
+		// Checking if placeholder values exist, if not, a simple query will suffice
+		if (empty($values) && !\strpos($statement, '?')) {
 
-			// beginning a transaction, so if something goes wrong, we can roll it back
-			$pdo->beginTransaction();
+			// Running the statement and returning the return (no throwing exception on empty return)
+			$stmt = $pdo->query($statement);
 
-			// Checking if placeholder values exist, if not, a simple query will suffice
-			if (empty($values) && !\strpos($statement, '?')) {
+		} else {
 
-				// Running the statement and returning the return (no throwing exception on empty return)
-				$stmt = $pdo->query($statement);
+			// Running the statement and returning the return (no throwing exception on empty return)
+			$stmt = $pdo->prepare($statement);
+			$stmt->execute($values);
 
-			} else {
-
-				// Running the statement and returning the return (no throwing exception on empty return)
-				$stmt = $pdo->prepare($statement);
-				$stmt->execute($values);
-
-			}
-
-			// committing the transaction
-			$pdo->commit();
-
-		} catch (\PDOException $pex) {
-
-			// rolling back a failed transaction
-			$pdo->rollback();
-			throw new CrudException('Something went wrong while running the query. The transaction has been rolled back and no commit has happend. Here is the error message: '.$pex->getMessage());
-		
 		}
 
 		// returning the statement
