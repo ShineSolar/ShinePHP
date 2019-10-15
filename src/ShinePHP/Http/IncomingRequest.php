@@ -6,7 +6,7 @@ namespace ShinePHP\Http;
 final class IncomingRequest {
 
 	public function validate_https(): bool {
-		return ($_SERVER['REQUEST_SCHEME'] === 'https' || \strpos($_SERVER['HTTP_HOST']) !== false ? true : false);
+		return ($_SERVER['REQUEST_SCHEME'] === 'https' || \strpos($_SERVER['HTTP_HOST', 'localhost') !== false ? true : false);
 	}
 
 	public function validate_content_type(string $type): bool {
