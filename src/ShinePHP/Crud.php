@@ -50,7 +50,7 @@ final class Crud {
 		$dsn = (getenv('DB_DSN') ? getenv('DB_DSN') : $dsn);
 		$username = getenv('DB_USERNAME');
 		$password = getenv('DB_PASSWORD');
-		$options = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC);
+		$options = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC, \PDO::ATTR_PERSISTENT => true);
 	    try {
 	        $pdo = new \PDO($dsn, $username, $password, $options);
 	        $this->pdo = $pdo;
