@@ -35,7 +35,6 @@ Pretty much, unless you're in the 5% of PHP developers in the world, Shine PHP w
 ## Requirements
 
 - Minimum PHP version of PHP 7.0.0
-- The only database driver that is supported right now is MySQL/MariaDB, so the MySQL PDO driver 
 - The cURL driver for PHP
 - The PCRE driver for PHP
 
@@ -52,8 +51,6 @@ or run:
 ```sh
 composer require adammcgurk/shine-php
 ```
-
-And right now, until the work being done in the automate_sql_details branch is finished, you need to go into the Crud class in the vendor/adammcgurk/shine-php/src/ShinePHP/ directory and input your database credentials on lines 46, 51, and 52 (The database name, MySQL username, and MySQL password respectively) to make sure the Crud class actually works. And the permissions given to your MySQL client need to be restricted to the localhost server, and given to no others.
 
 Here is how you include the library:
 
@@ -72,4 +69,7 @@ use ShinePHP\{Crud, CrudException, HandleData, EasyHttp};
 
 ## Crud
 
-### Method Signatures and examples
+Crud is a pretty simple class that allows you to interact with the database. It has no limitation on what RDMBS's it can interact with (it's table/column sanitization, however, has a few limitations) and you can declare the credentials via environment variables (MOST SECURE) or a config file. Here is how you do either:
+
+### Environment Variable Configuration:
+
