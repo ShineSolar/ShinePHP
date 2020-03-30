@@ -42,17 +42,22 @@ final class Crud {
 	 *
 	 */
 
-	public function __construct(bool $in_environment_variables = true, string $path_to_ini_file = '') {
+	public function __construct(bool $persistent_connections = true, bool $in_environment_variables = true, string $path_to_ini_file = '') {
 
 		// getting the details from the right spot
 		$db_login_details = ($in_environment_variables ? self::get_from_environment() : self::get_from_ini_file($path_to_ini_file));
 
+		// PDO configs
+		$pdo_configs = array(
+	        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, 
+	        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
+	    );
+
+	    if ($persistent_connections) $pdo_configs[\PDO::ATTR_PERSISTENT] = true;
+
 		// setting up the actual connection with the DSN, username, password, and PDO options
 	    try {
-	        $pdo = new \PDO($db_login_details['dsn'], $db_login_details['username'], $db_login_details['password'], array(
-	        	\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, 
-	        	\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
-	        ));
+	        $pdo = new \PDO($db_login_details['dsn'], $db_login_details['username'], $db_login_details['password'], $pdo_configs);
 	    } catch(\PDOException $ex) {
 	    	throw new CrudException('Trying to link to your database failed. This is usually because you have a wrong username or password on your mysql client. Here is the error message so you can do more digging! '.$ex);
 	    }
