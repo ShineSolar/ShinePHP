@@ -180,6 +180,7 @@ final class Crud {
 
 		// closing the cursor for perf reasons
 		$stmt->closeCursor();
+		$stmt = null;
 
 		// returning the change data
 		return $db_return;
@@ -215,6 +216,7 @@ final class Crud {
 
 		// closing the cursor for perf reasons
 		$stmt->closeCursor();
+		$stmt = null;
 
 		// This checks if there was only one row returned
 		// AND IF the return single level flag was set as true, it just returns that one row, as opposed to an assoc array only CONTAINING that one row
@@ -229,6 +231,10 @@ final class Crud {
 		// returning the SELECT'd data
 		return $db_return;
 
+	}
+
+	public function kill(): void {
+		$this->pdo = null;
 	}
 
 	/**
