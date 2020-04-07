@@ -4,7 +4,7 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 
 // Remember, requires are from the root in tests
-require 'src/ShinePHP/Data/PhoneValidator.php';
+require 'src/ShinePHP/Data/AmericanPhone.php';
 use ShinePHP\Data\AmericanPhone;
 
 final class PhoneTest extends TestCase {
