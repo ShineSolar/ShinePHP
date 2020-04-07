@@ -168,20 +168,22 @@ final class Crud {
 
 		// running a transaction
 		try {
+			
 			$this->pdo->beginTransaction();
 			$stmt = self::run_query($this->pdo, $statement, $values);
+		
+			// getting the most recent id inserted and getting the amount of rows affected
+			$db_return = array(
+				'last_insert_id' => $this->pdo->lastInsertId(),
+				'row_count' => $stmt->rowCount()
+			);
+
 			$this->pdo->commit();
+
 		} catch (\Exception|\PDOException $pex) {
 			$this->pdo->rollBack();
 			throw new CrudException('There has been a problem with the database transaction. It has been rolled back. Here is the error message: '.$pex->getMessage());
 		}
-		
-
-		// getting the most recent id inserted and getting the amount of rows affected
-		$db_return = array(
-			'last_insert_id' => $this->pdo->lastInsertId(),
-			'row_count' => $stmt->rowCount()
-		);
 
 		// closing the cursor for perf reasons
 		$stmt->closeCursor();
