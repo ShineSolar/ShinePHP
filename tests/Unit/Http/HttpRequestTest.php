@@ -26,6 +26,7 @@ final class HttpRequestUnitTest extends TestCase {
 		$this->assertEquals('GET', HttpRequest::verify_method('get'));
 		$this->assertEquals('POST', HttpRequest::verify_method('post'));
 		$this->assertEquals('DELETE', HttpRequest::verify_method('delete'));
+		$this->assertEquals('PATCH', HttpRequest::verify_method('patch'));
 	}
 
 }

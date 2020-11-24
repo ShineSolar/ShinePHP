@@ -71,11 +71,12 @@ final class HttpRequest {
 			case 'GET':
 			case 'PUT':
 			case 'DELETE':
+			case 'PATCH':
 				return $upper_cased_method;
 			break;
 
 			default:
-				throw new HttpRequestException('The HTTP request method must be one of POST, GET, PUT, or DELETE');
+				throw new HttpRequestException('The HTTP request method must be one of POST, GET, PATCH, PUT, or DELETE');
 
 		}
 
