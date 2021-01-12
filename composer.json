@@ -15,5 +15,8 @@
             "ShinePHP\\": "src/ShinePHP/"
         }
     },
-    "require": {}
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    }
 }
