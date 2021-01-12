@@ -5,19 +5,19 @@ namespace ShinePHP\Http;
 
 final class IncomingRequest {
 
-	public function validate_https(): bool {
+	static function validate_https(): bool {
 		return ($_SERVER['REQUEST_SCHEME'] === 'https' || \strpos($_SERVER['HTTP_HOST'], 'localhost') !== false ? true : false);
 	}
 
-	public function validate_content_type(string $type): bool {
+	static function validate_content_type(string $type): bool {
 		return ($_SERVER['CONTENT_TYPE'] === $type ? true : false);
 	}
 
-	public function validate_request_method(string $method): bool {
+	static function validate_request_method(string $method): bool {
 		return ($_SERVER['REQUEST_METHOD'] === $method ? true : false);
 	}
 
-	public function get_custom_header_value(string $header_value): ?string {
+	static function get_custom_header_value(string $header_value): ?string {
 
 		// replacing dashes with underscores
 		$safe_value = \strtoupper(\str_replace('-', '_', $header_value));
@@ -27,7 +27,7 @@ final class IncomingRequest {
 
 	}
 
-	public function retrieve_json_input(string $retrieve_url = 'php://input'): array {
+	static function retrieve_json_input(string $retrieve_url = 'php://input'): array {
 
 		// decode JSON array
 		$decoded_json = \json_decode(file_get_contents($retrieve_url), true);
@@ -37,7 +37,7 @@ final class IncomingRequest {
 
 	}
 
-	public function require_input_data(?array $input_data, array $field_names_to_validate = array()): array {
+	static function require_input_data(?array $input_data, array $field_names_to_validate = array()): array {
 
 		// making sure the data isn't null or empty
 		if (empty($input_data) || \is_null($input_data)) {
