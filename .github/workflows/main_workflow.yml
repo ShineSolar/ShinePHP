@@ -3,15 +3,29 @@ name: CI
 on: [push]
 
 jobs:
-  build:
+
+  run:
 
     runs-on: ubuntu-latest
     
+    name: Main Test Runner
     steps:
-    - uses: actions/checkout@v1
-    - name: Install Dependencies
-      run: composer install
+
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Install Correct PHP Version
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+
+    - name: Run composer update and install
+      run: |
+        composer update
+        composer install
+
     - name: Run Unit Tests
       run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit/.
+
     - name: Run Integration Tests
-      run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Integration/.
+      run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit/.
