@@ -28,4 +28,4 @@ jobs:
       run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit/.
 
     - name: Run Integration Tests
-      run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit/.
+      run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Integration/.
