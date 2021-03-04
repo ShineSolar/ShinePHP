@@ -20,7 +20,7 @@ namespace ShinePHP\Database;
  * 
  */
 
-final class Crud {
+class Crud {
 
 	/** 
 	 *  @access private
