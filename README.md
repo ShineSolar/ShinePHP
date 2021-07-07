@@ -2,8 +2,9 @@
 
 This is a very simple PHP library that allows developers to SHINE!
 
-### GO TO:
+This version is a fork of the version created by Adam McGurk while he was employed at Shine Solar, LLC.
 
+Find Adam's new version at: https://github.com/Mcgurk-Adam/ShinePHP
 
 ## Class Features
 - Secure by default CRUD (Create, Read, Update, Delete) database interactions
