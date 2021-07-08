@@ -72,5 +72,3 @@ use ShinePHP\{Crud, CrudException, HandleData, EasyHttp};
 
 Crud is a pretty simple class that allows you to interact with the database. It has no limitation on what RDMBS's it can interact with (it's table/column sanitization, however, has a few limitations) and you can declare the credentials via environment variables (MOST SECURE) or a config file. Here is how you do either:
 
-### Environment Variable Configuration:
-
