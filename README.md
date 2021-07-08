@@ -44,13 +44,13 @@ Pretty much, unless you're in the 5% of PHP developers in the world, Shine PHP w
 ShinePHP is available on Packagist (using semantic versioning), and installation via Composer is the recommended way to install ShinePHP. Just add this line to your composer.json file:
 
 ```json
-"adammcgurk/shine-php": "^1.0.0"
+"shinesolar/shine-php": "^1.0.0"
 ```
 
 or run:
 
 ```sh
-composer require adammcgurk/shine-php
+composer require shinesolar/shine-php
 ```
 
 Here is how you include the library:
