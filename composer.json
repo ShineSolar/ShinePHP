@@ -1,6 +1,6 @@
 {
     "name": "shinesolar/shine-php",
-    "description": "A simple PHP library to help speed development through the monotonous part of PHP programming (dealing with user input, DB connections, HTTP, etc...)",
+    "description": "A PHP library that wraps basic PDO functionality with industry-similar functionality.",
     "type": "library",
     "license": "MIT",
     "minimum-stability":"stable",
